@@ -1,0 +1,58 @@
+[gd_resource type="TileSet" format=3 uid="uid://gr1ms7by21by"]
+
+[ext_resource type="Texture2D" uid="uid://cj3sdi7t0yjf7" path="res://assets/tilesets/tile1.png" id="1_je6by"]
+[ext_resource type="Texture2D" uid="uid://covwciol0pku1" path="res://assets/tilesets/tile19.png" id="2_cpdn7"]
+[ext_resource type="Texture2D" uid="uid://cnvcuhtsjw28i" path="res://assets/tilesets/tile41.png" id="3_fjimg"]
+[ext_resource type="Texture2D" uid="uid://qraxy7isgho2" path="res://assets/tilesets/tile42.png" id="4_61c4p"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xly4l"]
+texture = ExtResource("1_je6by")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_64h83"]
+texture = ExtResource("2_cpdn7")
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1n4jy"]
+texture = ExtResource("3_fjimg")
+1:0/0 = 0
+2:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q3ftj"]
+texture = ExtResource("4_61c4p")
+1:0/0 = 0
+2:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+
+[resource]
+physics_layer_0/collision_layer = 1
+physics_layer_1/collision_layer = 1
+physics_layer_2/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_xly4l")
+sources/1 = SubResource("TileSetAtlasSource_64h83")
+sources/2 = SubResource("TileSetAtlasSource_1n4jy")
+sources/3 = SubResource("TileSetAtlasSource_q3ftj")

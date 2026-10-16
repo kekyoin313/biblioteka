@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://b45th7k3r0krt"]
+
+[ext_resource type="Script" uid="uid://bnoyo1k3lsvd2" path="res://data/enemies/enemy_data.gd" id="1_4dxoa"]
+
+[resource]
+script = ExtResource("1_4dxoa")
+enemy_name = "Book Keeper"
+max_hp = 40
+attack_pattern = Array[int]([6, 6, 10])
+metadata/_custom_type_script = "uid://bnoyo1k3lsvd2"

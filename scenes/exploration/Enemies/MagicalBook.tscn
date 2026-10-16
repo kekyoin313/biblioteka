@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://xjq2c56pl2b4"]
+
+[ext_resource type="Script" uid="uid://dbpyl0cev35dx" path="res://scenes/exploration/Enemies/magical_book.gd" id="1_rhsk4"]
+[ext_resource type="Resource" uid="uid://ih6yhnxk0wmb" path="res://data/enemies/magical_book.tres" id="2_byksd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_54kd3"]
+size = Vector2(24, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rhsk4"]
+size = Vector2(24, 24)
+
+[node name="MagicalBook" type="CharacterBody2D" unique_id=221629619]
+collision_layer = 4
+collision_mask = 5
+script = ExtResource("1_rhsk4")
+enemy_data = ExtResource("2_byksd")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=2114993593]
+custom_minimum_size = Vector2(24, 24)
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+color = Color(0.61854714, 0.058409933, 0.016281985, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1406203698]
+shape = SubResource("RectangleShape2D_54kd3")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1639401380]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=965081559]
+shape = SubResource("RectangleShape2D_rhsk4")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

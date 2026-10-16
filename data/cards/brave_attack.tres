@@ -1,0 +1,10 @@
+[gd_resource type="Resource" format=3 uid="uid://cbydl3v7q3608"]
+
+[resource]
+metadata/id = "strike"
+metadata/card_name = "Disposal"
+metadata/cost = 1
+metadata/type = "attack"
+metadata/damage = 6
+metadata/block = 0
+metadata/description = "The Hunt Come to a Close"

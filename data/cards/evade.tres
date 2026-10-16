@@ -1,0 +1,10 @@
+[gd_resource type="Resource" format=3 uid="uid://g7ak62wfy8oo"]
+
+[resource]
+metadata/id = "defend"
+metadata/card_name = "Defend"
+metadata/cost = 1
+metadata/type = "defense"
+metadata/damage = 0
+metadata/block = 5
+metadata/description = "Pertahanan dasar. 5 block."

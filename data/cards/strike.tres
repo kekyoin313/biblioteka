@@ -1,0 +1,10 @@
+[gd_resource type="Resource" format=3 uid="uid://k7l1dk28touc"]
+
+[resource]
+metadata/id = "brave_attack"
+metadata/card_name = "Furioso"
+metadata/cost = 2
+metadata/type = "attack"
+metadata/damage = 12
+metadata/block = 0
+metadata/description = "Serangan Berani. 12 damage"
