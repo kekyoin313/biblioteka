@@ -83,6 +83,13 @@ offset_left = -36.0
 offset_top = -156.0
 offset_right = 99.0
 offset_bottom = -129.0
+show_percentage = false
+
+[node name="PlayerHpNumber" type="Label" parent="PlayerArea" unique_id=700840272]
+offset_left = -27.0
+offset_top = -153.0
+offset_right = 92.0
+offset_bottom = -130.0
 
 [node name="EnemyArea" type="Node2D" parent="." unique_id=357952489]
 position = Vector2(937, 257)
@@ -107,5 +114,12 @@ offset_left = -61.0
 offset_top = -150.0
 offset_right = 85.0
 offset_bottom = -123.0
+show_percentage = false
+
+[node name="EnemyHpNumber" type="Label" parent="EnemyArea" unique_id=1102382810]
+offset_left = -53.0
+offset_top = -148.0
+offset_right = 76.0
+offset_bottom = -125.0
 
 [node name="Background" type="Sprite2D" parent="." unique_id=877308086]

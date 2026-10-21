@@ -8,6 +8,12 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_67mqo"]
 size = Vector2(1663, 60)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xrivr"]
+size = Vector2(241, 17)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_13qdw"]
+size = Vector2(12, 80)
+
 [node name="Level" type="Node2D" unique_id=90229433]
 
 [node name="Ground" type="StaticBody2D" parent="." unique_id=1907990142]
@@ -24,8 +30,43 @@ tile_set = ExtResource("1_857qy")
 [node name="Player" parent="." unique_id=277019869 instance=ExtResource("2_67mqo")]
 position = Vector2(100, 300)
 
-[node name="MagicalBook" parent="." unique_id=221629619 instance=ExtResource("3_4opvy")]
+[node name="MagicalBook" parent="." unique_id=221629619 node_paths=PackedStringArray("player") instance=ExtResource("3_4opvy")]
 position = Vector2(400, 300)
+player = NodePath("../Player")
 
-[node name="BookKeeper" parent="." unique_id=602755473 instance=ExtResource("4_qw5yn")]
-position = Vector2(306, 259)
+[node name="BookKeeper" parent="." unique_id=602755473 node_paths=PackedStringArray("player") instance=ExtResource("4_qw5yn")]
+position = Vector2(883, 671)
+chase_speed = 200.0
+player = NodePath("../Player")
+
+[node name="Platform" type="StaticBody2D" parent="." unique_id=1788256931]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform" unique_id=1797145777]
+position = Vector2(840.5, 743.5)
+shape = SubResource("RectangleShape2D_xrivr")
+one_way_collision = true
+
+[node name="TileMapLayer" type="TileMapLayer" parent="Platform" unique_id=1432825089]
+tile_map_data = PackedByteArray("AAAtAC4AAQABAAIAAAAuAC4AAQABAAIAAAAvAC4AAQABAAIAAAAwAC4AAQABAAIAAAAxAC4AAQABAAIAAAAyAC4AAQABAAIAAAAzAC4AAQABAAIAAAA0AC4AAQABAAIAAAA1AC4AAQABAAIAAAA2AC4AAQABAAIAAAA3AC4AAQABAAIAAAA4AC4AAQABAAIAAAA5AC4AAQABAAIAAAA6AC4AAQABAAIAAAA7AC4AAQABAAIAAAA=")
+tile_set = ExtResource("1_857qy")
+
+[node name="Stairs" type="StaticBody2D" parent="." unique_id=347703361]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Stairs" unique_id=13886509]
+position = Vector2(1654, 790)
+polygon = PackedVector2Array(-135, 7, -135, -19, -114, -19, -114, -43, -95, -43, -95, -64, -75, -64, -75, -85, -54, -85, -54, -111, -14, -110, -14, 10, -134, 10)
+
+[node name="TileMapLayer" type="TileMapLayer" parent="Stairs" unique_id=1096819145]
+scale = Vector2(2.5, 2.5)
+tile_map_data = PackedByteArray("AABjADAAAwAAAAEAAABjADEAAwAAAAIAAABkAC8AAwABAAAAAABkADAAAwABAAEAAABkADEAAwABAAIAAABlAC8AAwACAAAAAABlADAAAwACAAEAAABlADEAAwACAAIAAABmADAAAwACAAEAAABmADEAAwACAAIAAABmAC8AAwACAAIAAABnAC4AAwACAAEAAABnAC8AAwACAAIAAABnADAAAwACAAEAAABnADEAAwACAAIAAABmAC4AAwABAAEAAAAmABIAAwAAAAEAAAAmABMAAwAAAAIAAAAnABEAAwABAAAAAAAnABIAAwABAAEAAAAnABMAAwABAAIAAAAoABEAAwACAAAAAAAoABIAAwACAAEAAAAoABMAAwACAAIAAAA=")
+tile_set = ExtResource("1_857qy")
+
+[node name="Wall" type="StaticBody2D" parent="." unique_id=78123225]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall" unique_id=1496005493]
+position = Vector2(533, 759)
+shape = SubResource("RectangleShape2D_13qdw")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="Wall" unique_id=313957376]
+tile_map_data = PackedByteArray("AAAhAC8ABAACAAIAAAAhADAABAACAAEAAAAhADEABAACAAIAAAAhAC0ABAACAAAAAAAhAC4ABAACAAEAAAA=")
+tile_set = ExtResource("1_857qy")

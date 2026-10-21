@@ -6,8 +6,8 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_54kd3"]
 size = Vector2(24, 24)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rhsk4"]
-size = Vector2(24, 24)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qw5yn"]
+size = Vector2(30, 30)
 
 [node name="MagicalBook" type="CharacterBody2D" unique_id=221629619]
 collision_layer = 4
@@ -30,6 +30,6 @@ shape = SubResource("RectangleShape2D_54kd3")
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=965081559]
-shape = SubResource("RectangleShape2D_rhsk4")
+shape = SubResource("RectangleShape2D_qw5yn")
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
