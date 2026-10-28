@@ -139,7 +139,7 @@ func is_boss_defeated(boss_id: String) -> bool:
 	return boss_id in defeated_bosses
 
 func _go_to_battle() -> void:
-	get_tree().change_scene_to_file("res://scenes/battle/Battle.tscn")
+	await SceneTransition.change_scene("res://scenes/battle/Battle.tscn")
 	
 func is_enemy_defeated(enemy_id: String) -> bool:
 	return not enemy_id.is_empty() and enemy_id in defeated_enemies

@@ -1,0 +1,133 @@
+[gd_scene format=3 uid="uid://dlrf2j48a5ghc"]
+
+[ext_resource type="Script" uid="uid://bqt0ialwy32lw" path="res://scenes/ui/dialogue.gd" id="1_3splj"]
+[ext_resource type="Texture2D" uid="uid://ioca2rmpd2gx" path="res://assets/sprites/Player/Player_mata terbuka.png" id="2_5mcti"]
+[ext_resource type="Texture2D" uid="uid://dl8h1ydnih20w" path="res://assets/ui/dialog_box.png" id="3_4hwkt"]
+[ext_resource type="FontFile" uid="uid://hxo5n84vgldg" path="res://assets/fonts/barlow-semi-condensed.regular.ttf" id="4_shd1d"]
+[ext_resource type="FontFile" uid="uid://dqpicokdk40m6" path="res://assets/fonts/BarlowSemiCondensed-Bold.ttf" id="5_j1ns2"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h8pml"]
+texture = ExtResource("3_4hwkt")
+
+[node name="Control" type="CanvasLayer" unique_id=414233120]
+process_mode = 3
+layer = 4
+script = ExtResource("1_3splj")
+
+[node name="Background" type="TextureRect" parent="." unique_id=46648232]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="CharPortrait" type="TextureRect" parent="." unique_id=1574276337]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 199.99994
+offset_top = -260.0
+offset_right = 617.6492
+offset_bottom = 570.11035
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("2_5mcti")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="PortraitContainer" type="Control" parent="." unique_id=1276170968]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DialoguePanel" type="Panel" parent="." unique_id=1476197029]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = 43.0
+offset_right = 576.0
+offset_bottom = 324.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_h8pml")
+
+[node name="NextButton" type="TextureButton" parent="DialoguePanel" unique_id=2110045813]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 319.0
+offset_top = 69.5
+offset_right = 514.0
+offset_bottom = 114.5
+grow_horizontal = 2
+grow_vertical = 2
+ignore_texture_size = true
+stretch_mode = 6
+
+[node name="Label" type="Label" parent="DialoguePanel/NextButton" unique_id=540387514]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -62.5
+offset_top = -11.5
+offset_right = 113.5
+offset_bottom = 24.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_shd1d")
+theme_override_font_sizes/font_size = 20
+text = "Klik untuk skip dialog"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CharName" type="Label" parent="DialoguePanel" unique_id=842773604]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 56.0
+offset_top = -134.5
+offset_right = 584.0
+offset_bottom = -73.5
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("5_j1ns2")
+theme_override_font_sizes/font_size = 50
+text = "Bambang"
+vertical_alignment = 1
+
+[node name="DialogueText" type="RichTextLabel" parent="DialoguePanel" unique_id=1537149731]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -518.5
+offset_top = -67.5
+offset_right = 549.5
+offset_bottom = 84.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/normal_font = ExtResource("4_shd1d")
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "Menurut laporan awal, CFO sempat mempertanyakan beberapa angka dalam laporan keuangan sebelum mengundurkan diri."

@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="biblioteka (Copy)"
-run/main_scene="uid://ckkv85ho3223s"
+run/main_scene="uid://027n0ohocfhf"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 

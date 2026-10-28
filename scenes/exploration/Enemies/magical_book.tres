@@ -1,10 +1,14 @@
 [gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://de6tvf4v0w3y1"]
 
 [ext_resource type="Script" uid="uid://bnoyo1k3lsvd2" path="res://data/enemies/enemy_data.gd" id="1_6j3an"]
+[ext_resource type="Texture2D" uid="uid://xp0e3k82yfdo" path="res://assets/sprites/Enemy/buku.png" id="1_gnola"]
+[ext_resource type="Texture2D" uid="uid://b5ert2e1ny3kv" path="res://assets/sprites/Enemy/buku_hit.png" id="2_a00ms"]
 
 [resource]
 script = ExtResource("1_6j3an")
 enemy_name = "Magical Book"
 max_hp = 60
 attack_pattern = Array[int]([3, 4, 4])
+battle_sprite = ExtResource("1_gnola")
+hurt_sprite = ExtResource("2_a00ms")
 metadata/_custom_type_script = "uid://bnoyo1k3lsvd2"
