@@ -13,27 +13,54 @@ const SHIELD_BAR_MAX: float = 30.0
 @onready var hand_container: HBoxContainer = $UILayer/HandContainer
 @onready var end_turn_button: Button = $UILayer/EndTurnButton
 @onready var result_label: Label = $UILayer/ResultLabel
+@onready var player_sprite: TextureRect = $PlayerArea/PlayerSprite
+
 
 var player_shield_bar: ProgressBar
 var enemy_shield_bar: ProgressBar
 var player_shield_label: Label
 var enemy_shield_label: Label
+const EYES_OPEN: Texture2D = preload(
+    "res://assets/sprites/Player/Player_mata terbuka.png"
+)
 
+const EYES_CLOSED: Texture2D = preload(
+    "res://assets/sprites/Player/Player_mata tertutup.png"
+)
+const ATTACK_CARD_TEXTURE: Texture2D = preload(
+	"res://assets/sprites/Cards/Attack.png"
+)
+
+const DEFENSE_CARD_TEXTURE: Texture2D = preload(
+	"res://assets/sprites/Cards/Defense.png"
+)
+
+const EVADE_CARD_TEXTURE: Texture2D = preload(
+	"res://assets/sprites/Cards/Evade.png"
+)
 
 func _ready() -> void:
 	_create_shield_ui()
 
 	# Connect before setup so the initial hand and turn events are not missed.
-	BattleManager.hand_updated.connect(_on_hand_updated)
-	BattleManager.energy_updated.connect(_on_energy_updated)
 	BattleManager.player_hp_updated.connect(_on_player_hp_updated)
 	BattleManager.enemy_hp_updated.connect(_on_enemy_hp_updated)
 	BattleManager.shield_updated.connect(_on_shield_updated)
 	BattleManager.turn_changed.connect(_on_turn_changed)
 	BattleManager.battle_finished.connect(_on_battle_finished)
-
-	end_turn_button.pressed.connect(_on_end_turn_pressed)
 	result_label.visible = false
+	energy_label.text = "PILIH SATU AKSI"
+	end_turn_button.hide()
+	_create_action_buttons()
+	player_sprite.set_anchors_and_offsets_preset(
+	Control.PRESET_TOP_LEFT
+)
+	player_sprite.position = Vector2(-60, -120)
+	player_sprite.size = Vector2(180, 234)
+	player_sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	player_sprite.texture = EYES_OPEN
+
+	call_deferred("_blink_loop")
 
 	BattleManager.setup_battle(GameManager.current_enemy_data)
 
@@ -152,19 +179,26 @@ func _on_shield_updated(player_block: int, enemy_block: int) -> void:
 func _on_turn_changed(turn_owner: String) -> void:
 	if turn_owner == "player":
 		turn_label.text = "Giliranmu"
-		end_turn_button.disabled = false
 	else:
 		turn_label.text = "Giliran Musuh"
-		end_turn_button.disabled = true
 
+	for child in hand_container.get_children():
+		if child is BaseButton:
+			child.disabled = turn_owner != "player"
 
 func _on_end_turn_pressed() -> void:
 	BattleManager.end_player_turn()
 
 
+
 func _on_battle_finished(result: String) -> void:
+	for child in hand_container.get_children():
+		if child is BaseButton:
+			child.disabled = true
+
 	end_turn_button.disabled = true
 	result_label.visible = true
+
 	if result == "win":
 		result_label.text = "MENANG!"
 		await get_tree().create_timer(2.0).timeout
@@ -173,3 +207,79 @@ func _on_battle_finished(result: String) -> void:
 		result_label.text = "KALAH..."
 		await get_tree().create_timer(2.0).timeout
 		GameManager.end_battle("lose")
+
+func _blink_loop() -> void:
+	while is_inside_tree():
+		await get_tree().create_timer(
+			randf_range(2.0, 5.0)
+		).timeout
+
+		if not is_inside_tree():
+			return
+
+		player_sprite.texture = EYES_CLOSED
+
+		await get_tree().create_timer(0.12).timeout
+
+		if not is_inside_tree():
+			return
+
+		player_sprite.texture = EYES_OPEN
+
+func _create_action_buttons() -> void:
+	for child in hand_container.get_children():
+		child.queue_free()
+
+	# Posisikan ketiga gambar di tengah bawah.
+	hand_container.anchor_left = 0.5
+	hand_container.anchor_right = 0.5
+	hand_container.anchor_top = 1.0
+	hand_container.anchor_bottom = 1.0
+
+	hand_container.offset_left = -270.0
+	hand_container.offset_right = 270.0
+	hand_container.offset_top = -245.0
+	hand_container.offset_bottom = -10.0
+
+	hand_container.custom_minimum_size = Vector2(540, 235)
+	hand_container.alignment = BoxContainer.ALIGNMENT_CENTER
+	hand_container.add_theme_constant_override("separation", 10)
+
+	var actions: Array[Dictionary] = [
+		{
+			"id": "ATTACK",
+			"texture": ATTACK_CARD_TEXTURE,
+			"tooltip": "20% critical hit, damage ganda"
+		},
+		{
+			"id": "DEFENSE",
+			"texture": DEFENSE_CARD_TEXTURE,
+			"tooltip": "Shield sebesar 20% HP"
+		},
+		{
+			"id": "EVADE",
+			"texture": EVADE_CARD_TEXTURE,
+			"tooltip": "Peluang menghindar 50%"
+		}
+	]
+
+	for action in actions:
+		var button := TextureButton.new()
+
+		button.name = str(action["id"]) + "Button"
+		button.texture_normal = action["texture"] as Texture2D
+		button.ignore_texture_size = true
+		button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		button.custom_minimum_size = Vector2(165, 220)
+		button.tooltip_text = str(action["tooltip"])
+		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+		button.pressed.connect(
+			_on_action_pressed.bind(str(action["id"]))
+		)
+
+		hand_container.add_child(button)
+
+
+func _on_action_pressed(action: String) -> void:
+	BattleManager.choose_player_action(action)

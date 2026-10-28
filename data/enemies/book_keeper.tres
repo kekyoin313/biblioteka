@@ -6,5 +6,5 @@
 script = ExtResource("1_4dxoa")
 enemy_name = "Book Keeper"
 max_hp = 60
-attack_pattern = Array[int]([6, 6, 10])
+attack_pattern = Array[int]([5, 5, 7])
 metadata/_custom_type_script = "uid://bnoyo1k3lsvd2"

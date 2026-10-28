@@ -35,7 +35,7 @@ var player_max_energy: int = 3
 var enemy_hp: int = 60
 var enemy_max_hp: int = 60
 var enemy_block: int = 0
-var enemy_pattern: Array[int] = [5, 5, 8]
+var enemy_pattern: Array[int] = [4, 4, 6]
 var enemy_turn_index: int = 0
 var enemy_damage_bonus: int = 0
 var enemy_enhance_ready: bool = true
@@ -67,10 +67,10 @@ func setup_battle(enemy_data: Resource) -> void:
 	else:
 		enemy_hp = 60
 		enemy_max_hp = 60
-		enemy_pattern = [5, 5, 8]
+		enemy_pattern = [4, 4, 6]
 
 	if enemy_pattern.is_empty():
-		enemy_pattern = [5, 5, 8]
+		enemy_pattern = [4, 4, 6]
 
 	enemy_block = 0
 	shield_updated.emit(player_block, enemy_block)
@@ -92,17 +92,58 @@ func setup_battle(enemy_data: Resource) -> void:
 
 	start_player_turn()
 
+var player_evade_active: bool = false
 
 func start_player_turn() -> void:
 	if is_battle_over:
 		return
+
 	turn = "player"
+
 	player_block = 0
+	player_evade_active = false
+
 	shield_updated.emit(player_block, enemy_block)
-	player_energy = player_max_energy
-	draw_cards(5)
 	turn_changed.emit("player")
-	energy_updated.emit(player_energy, player_max_energy)
+
+func choose_player_action(action: String) -> void:
+	if is_battle_over or turn != "player":
+		return
+
+	player_evade_active = false
+
+	match action:
+		"ATTACK":
+			# Serangan dasar 6 damage.
+			# Peluang critical 20% menghasilkan 12 damage.
+			var is_critical: bool = randf() < 0.20
+			var damage: int = 12 if is_critical else 6
+
+			if is_critical:
+				print("[Battle] CRITICAL HIT! Damage: ", damage)
+			else:
+				print("[Battle] Serangan biasa. Damage: ", damage)
+
+			deal_damage_to_enemy(damage)
+
+		"DEFENSE":
+			# Shield sebesar 20% HP maksimal pemain.
+			player_block = int(round(player_max_hp * 0.20))
+			shield_updated.emit(player_block, enemy_block)
+
+			print("[Battle] Defense! Shield: ", player_block)
+
+		"EVADE":
+			# Peluang menghindar diperiksa saat musuh menyerang.
+			player_evade_active = true
+			print("[Battle] Bersiap menghindar!")
+
+		_:
+			return
+
+	# Setiap aksi pemain langsung mengakhiri gilirannya.
+	if not is_battle_over:
+		enemy_turn()
 
 
 func draw_cards(amount: int) -> void:
@@ -226,15 +267,9 @@ func _build_state_features(current_enemy_damage: int) -> Dictionary:
 
 
 func _estimate_next_player_damage() -> float:
-	# Enemy bertindak setelah tangan Player dibuang. Estimasikan 5 kartu berikutnya
-	# dari draw pile, lalu gunakan discard pile jika draw pile hampir habis.
-	var upcoming: Array = draw_pile.duplicate()
-	if upcoming.size() < 5 and not discard_pile.is_empty():
-		var recycled: Array = discard_pile.duplicate()
-		recycled.shuffle()
-		upcoming.append_array(recycled)
-	var next_hand: Array = upcoming.slice(0, mini(5, upcoming.size()))
-	return _max_damage_for_cards(next_hand, player_max_energy)
+	# Perkiraan damage Attack:
+	# 80% x 6 + 20% x 12 = 7.2
+	return 7.2
 
 
 func _estimate_player_damage_this_turn() -> float:
@@ -399,17 +434,29 @@ func deal_damage_to_enemy(amount: int) -> void:
 		finish_battle("win")
 
 
+
 func deal_damage_to_player(amount: int) -> void:
+	if player_evade_active:
+		player_evade_active = false
+
+		if randf() < 0.50:
+			print("[Battle] Evade berhasil! Tidak menerima damage.")
+			return
+
+		print("[Battle] Evade gagal!")
+
 	var actual: int = maxi(0, amount - player_block)
 	player_block = maxi(0, player_block - amount)
 	player_hp = maxi(0, player_hp - actual)
+
 	shield_updated.emit(player_block, enemy_block)
 	GameManager.player_hp = player_hp
 	player_hp_updated.emit(player_hp, player_max_hp)
+
 	print("[Battle] Player menerima ", actual, " damage. HP: ", player_hp)
+
 	if player_hp <= 0:
 		finish_battle("lose")
-
 
 func heal_player(amount: int) -> void:
 	player_hp = mini(player_max_hp, player_hp + amount)

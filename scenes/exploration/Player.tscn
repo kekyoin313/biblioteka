@@ -5,6 +5,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pq8s5"]
 size = Vector2(24, 32)
 
+
 [node name="Player" type="CharacterBody2D" unique_id=1058505691]
 collision_layer = 2
 collision_mask = 5
@@ -24,3 +25,4 @@ offset_left = -12.0
 offset_top = -16.0
 offset_right = 12.0
 offset_bottom = 16.0
+

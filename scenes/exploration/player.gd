@@ -3,6 +3,8 @@ extends CharacterBody2D
 @export var speed: float = 200.0
 @export var jump_velocity: float = -400.0
 
+func _ready() -> void:
+	add_to_group("player")
 func _physics_process(delta: float) -> void:
 	# Gravitasi
 	if not is_on_floor():

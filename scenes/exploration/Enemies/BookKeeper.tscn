@@ -29,7 +29,7 @@ shape = SubResource("RectangleShape2D_wjdne")
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1468616782]
-scale = Vector2(2, 2)
+scale = Vector2(1.5, 1.5)
 shape = SubResource("RectangleShape2D_ym36o")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1109922442]
