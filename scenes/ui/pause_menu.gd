@@ -1,6 +1,5 @@
 extends CanvasLayer
-## PauseMenu (autoload) — Esc untuk jeda.
-## Hanya aktif di scene exploration dan tidak saat battle.
+
 
 const MAIN_MENU_SCENE := "res://scenes/ui/MainMenu.tscn"
 
@@ -40,6 +39,9 @@ func pause() -> void:
 	resume_btn.grab_focus()
 
 func resume() -> void:
+	AudioManager.play_sfx(
+    "res://assets/audio/sfx/open_menu.wav"
+)
 	root.visible = false
 	get_tree().paused = false
 

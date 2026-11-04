@@ -17,6 +17,11 @@ var enemy_planned_damage: int = 0
 
 const RECORD_PATH := "user://battle_records.jsonl"
 const MODEL_PATH := "res://data/decision_tree_rewards.json"
+const SFX_ATTACK_MC := "res://assets/audio/sfx/attack_mc_1.mp3"
+const SFX_ATTACK_ENEMY := "res://assets/audio/sfx/attack_enemy.mp3"
+const SFX_DEFENSE_MC := "res://assets/audio/sfx/defence_up_mc.mp3"
+const SFX_ATTACK_CARD := "res://assets/audio/sfx/attack_mc_2.mp3"
+
 const FEATURES: Array[String] = [
 	"enemy_hp_ratio",
 	"player_hp_ratio",
@@ -141,11 +146,11 @@ func choose_player_action(action: String) -> void:
 
 	match action:
 		"ATTACK":
-			# Serangan memakai damage dasar player (naik lewat buku upgrade).
-			# Peluang critical 20% menghasilkan damage x2.
 			var is_critical: bool = randf() < 0.20
 			var base_damage: int = GameManager.player_base_damage
 			var damage: int = base_damage * 2 if is_critical else base_damage
+			AudioManager.play_sfx(SFX_ATTACK_MC)
+
 
 			if is_critical:
 				print("[Battle] CRITICAL HIT! Damage: ", damage)
@@ -158,7 +163,7 @@ func choose_player_action(action: String) -> void:
 			# Shield sebesar 20% HP maksimal pemain.
 			player_block = int(round(player_max_hp * 0.20))
 			shield_updated.emit(player_block, enemy_block)
-
+			AudioManager.play_sfx(SFX_DEFENSE_MC)
 			print("[Battle] Defense! Shield: ", player_block)
 
 		"EVADE":
@@ -209,6 +214,7 @@ func play_card(card: Resource) -> void:
 	energy_updated.emit(player_energy, player_max_energy)
 
 	if damage > 0:
+		AudioManager.play_sfx(SFX_ATTACK_CARD)
 		deal_damage_to_enemy(damage)
 	if block > 0 and not is_battle_over:
 		player_block += block
@@ -455,6 +461,7 @@ func _execute_enemy_planned_action() -> void:
 	
 	match enemy_planned_action:
 		"ATTACK":
+			AudioManager.play_sfx(SFX_ATTACK_ENEMY)
 			enemy_turn_index += 1
 			enemy_damage_bonus = 0
 			enemy_enhance_ready = true
