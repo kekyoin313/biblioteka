@@ -9,6 +9,7 @@ signal turn_changed(turn_owner: String)
 signal battle_finished(result: String)
 signal enemy_intent_updated(action: String, damage: int)
 signal player_evaded(success: bool)
+signal enemy_evaded(success: bool)
 
 # Aksi musuh yang sedang "ditampilkan" ke pemain
 var enemy_planned_action: String = ""
@@ -140,10 +141,11 @@ func choose_player_action(action: String) -> void:
 
 	match action:
 		"ATTACK":
-			# Serangan dasar 6 damage.
-			# Peluang critical 20% menghasilkan 12 damage.
+			# Serangan memakai damage dasar player (naik lewat buku upgrade).
+			# Peluang critical 20% menghasilkan damage x2.
 			var is_critical: bool = randf() < 0.20
-			var damage: int = 12 if is_critical else 6
+			var base_damage: int = GameManager.player_base_damage
+			var damage: int = base_damage * 2 if is_critical else base_damage
 
 			if is_critical:
 				print("[Battle] CRITICAL HIT! Damage: ", damage)
@@ -237,9 +239,8 @@ func _build_state_features(current_enemy_damage: int) -> Dictionary:
 
 
 func _estimate_next_player_damage() -> float:
-	# Perkiraan damage Attack:
-	# 80% x 6 + 20% x 12 = 7.2
-	return 7.2
+	# Perkiraan damage Attack: 80% x base + 20% x 2*base = 1.2 x base
+	return float(GameManager.player_base_damage) * 1.2
 
 
 func _estimate_player_damage_this_turn() -> float:
@@ -450,6 +451,7 @@ func _execute_enemy_planned_action() -> void:
 	
 	last_enemy_action = enemy_planned_action
 	print("[Battle] Musuh eksekusi: ", enemy_planned_action)
+
 	
 	match enemy_planned_action:
 		"ATTACK":
@@ -465,3 +467,4 @@ func _execute_enemy_planned_action() -> void:
 			enemy_damage_bonus += ENHANCE_BONUS
 			enemy_enhance_ready = false
 			print("[Battle] Musuh enhance +", ENHANCE_BONUS)
+			

@@ -14,9 +14,18 @@ extends CharacterBody2D
 var patrol_direction: float = 1.0
 var patrol_origin_x: float = 0.0
 var is_chasing: bool = false
-
+var encounter_started: bool = false
+var persistent_enemy_id: String = ""
 
 func _ready() -> void:
+	persistent_enemy_id = _make_persistent_id()
+	if GameManager.is_enemy_defeated(persistent_enemy_id):
+		collision_layer = 0
+		collision_mask = 0
+		set_physics_process(false)
+		call_deferred("queue_free")
+		return
+		
 	patrol_origin_x = global_position.x
 
 	if player == null:
@@ -84,7 +93,19 @@ func _physics_process(delta: float) -> void:
 	if not is_chasing and is_on_wall():
 		patrol_direction *= -1.0
 
+func _make_persistent_id() -> String:
+	var scene_path := ""
+	var scene := get_tree().current_scene
 
+	if scene != null:
+		scene_path = scene.scene_file_path
+
+	return "%s::%s" % [scene_path, str(get_path())]
+	
 func _on_area_2d_body_entered(body: Node2D) -> void:
+	if encounter_started:
+		return
+
 	if body.name == "Player" or body.is_in_group("player"):
-		GameManager.start_battle(enemy_data)
+		encounter_started = true
+		GameManager.start_battle(enemy_data, persistent_enemy_id)

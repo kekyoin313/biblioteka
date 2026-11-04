@@ -1,0 +1,269 @@
+[gd_scene format=3 uid="uid://cjkayl1450x1c"]
+
+[ext_resource type="Script" uid="uid://ouuukxhor51y" path="res://scenes/exploration/level_area2.gd" id="1_lvl2"]
+[ext_resource type="Script" uid="uid://bw7onr3g0nh3v" path="res://scenes/exploration/moving_shelf.gd" id="2_move"]
+[ext_resource type="Texture2D" uid="uid://dq17i18x3r363" path="res://assets/stage2_background.png" id="3_bg"]
+[ext_resource type="Texture2D" uid="uid://dp30nsggw6jl7" path="res://assets/stage2_ground.png" id="4_gr"]
+[ext_resource type="Texture2D" uid="uid://cs6u6rkm2lw8a" path="res://assets/stage2_shelf.png" id="5_sh"]
+[ext_resource type="PackedScene" uid="uid://de5yyvva5orfg" path="res://scenes/exploration/Player.tscn" id="6_ply"]
+[ext_resource type="PackedScene" uid="uid://c3fm8m6jxmfsv" path="res://scenes/exploration/Enemies/BookKeeper.tscn" id="7_bk"]
+[ext_resource type="PackedScene" uid="uid://b8dkckvndru4s" path="res://scenes/exploration/Door.tscn" id="8_door"]
+
+[sub_resource type="RectangleShape2D" id="Shape_Ground"]
+size = Vector2(3200, 60)
+
+[sub_resource type="RectangleShape2D" id="Shape_Barrier"]
+size = Vector2(40, 900)
+
+[sub_resource type="RectangleShape2D" id="Shape_Shelf192"]
+size = Vector2(192, 14)
+
+[sub_resource type="RectangleShape2D" id="Shape_Shelf160"]
+size = Vector2(160, 14)
+
+[sub_resource type="RectangleShape2D" id="Shape_Shelf224"]
+size = Vector2(224, 14)
+
+[sub_resource type="RectangleShape2D" id="Shape_Shelf256"]
+size = Vector2(256, 14)
+
+[sub_resource type="RectangleShape2D" id="Shape_Shelf288"]
+size = Vector2(288, 14)
+
+[node name="Level" type="Node2D" unique_id=2138023436]
+script = ExtResource("1_lvl2")
+
+[node name="Background" type="Sprite2D" parent="." unique_id=215150712]
+z_index = -20
+texture_filter = 1
+position = Vector2(0, 160)
+texture = ExtResource("3_bg")
+centered = false
+
+[node name="Ground" type="StaticBody2D" parent="." unique_id=1856503850]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=47007852]
+position = Vector2(1600, 830)
+shape = SubResource("Shape_Ground")
+
+[node name="Art" type="TextureRect" parent="Ground" unique_id=144439455]
+texture_filter = 1
+offset_top = 800.0
+offset_right = 3200.0
+offset_bottom = 912.0
+mouse_filter = 2
+texture = ExtResource("4_gr")
+
+[node name="Barriers" type="StaticBody2D" parent="." unique_id=702716548]
+
+[node name="Left" type="CollisionShape2D" parent="Barriers" unique_id=834177436]
+position = Vector2(-20, 460)
+shape = SubResource("Shape_Barrier")
+
+[node name="Right" type="CollisionShape2D" parent="Barriers" unique_id=745266143]
+position = Vector2(3220, 460)
+shape = SubResource("Shape_Barrier")
+
+[node name="Shelves" type="Node2D" parent="." unique_id=1722311528]
+
+[node name="Shelf1" type="StaticBody2D" parent="Shelves" unique_id=1077370233]
+position = Vector2(620, 720)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf1" unique_id=1516512532]
+position = Vector2(96, 7)
+shape = SubResource("Shape_Shelf192")
+one_way_collision = true
+
+[node name="Art" type="TextureRect" parent="Shelves/Shelf1" unique_id=558919253]
+texture_filter = 1
+offset_right = 192.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("5_sh")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Shelf2" type="AnimatableBody2D" parent="Shelves" unique_id=569809475]
+position = Vector2(900, 660)
+script = ExtResource("2_move")
+travel = Vector2(0, -90)
+duration = 3.2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf2" unique_id=1284910913]
+position = Vector2(80, 7)
+shape = SubResource("Shape_Shelf160")
+one_way_collision = true
+
+[node name="Art" type="TextureRect" parent="Shelves/Shelf2" unique_id=156129971]
+texture_filter = 1
+offset_right = 160.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("5_sh")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Shelf3" type="StaticBody2D" parent="Shelves" unique_id=918196357]
+position = Vector2(1180, 560)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf3" unique_id=859674349]
+position = Vector2(112, 7)
+shape = SubResource("Shape_Shelf224")
+one_way_collision = true
+
+[node name="Art" type="TextureRect" parent="Shelves/Shelf3" unique_id=1498382579]
+texture_filter = 1
+offset_right = 224.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("5_sh")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Shelf4" type="AnimatableBody2D" parent="Shelves" unique_id=749499831]
+position = Vector2(1480, 540)
+script = ExtResource("2_move")
+duration = 3.6
+phase = 0.8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf4" unique_id=2001968896]
+position = Vector2(80, 7)
+shape = SubResource("Shape_Shelf160")
+one_way_collision = true
+
+[node name="Art" type="TextureRect" parent="Shelves/Shelf4" unique_id=503432326]
+texture_filter = 1
+offset_right = 160.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("5_sh")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Shelf5" type="StaticBody2D" parent="Shelves" unique_id=913927551]
+position = Vector2(1760, 430)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf5" unique_id=1459966971]
+position = Vector2(128, 7)
+shape = SubResource("Shape_Shelf256")
+one_way_collision = true
+
+[node name="Art" type="TextureRect" parent="Shelves/Shelf5" unique_id=61555865]
+texture_filter = 1
+offset_right = 256.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("5_sh")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Shelf6" type="AnimatableBody2D" parent="Shelves" unique_id=469524761]
+position = Vector2(2080, 400)
+script = ExtResource("2_move")
+travel = Vector2(160, 0)
+duration = 4.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf6" unique_id=498254311]
+position = Vector2(80, 7)
+shape = SubResource("Shape_Shelf160")
+one_way_collision = true
+
+[node name="Art" type="TextureRect" parent="Shelves/Shelf6" unique_id=1954075344]
+texture_filter = 1
+offset_right = 160.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("5_sh")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Shelf7" type="StaticBody2D" parent="Shelves" unique_id=357287535]
+position = Vector2(2400, 330)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf7" unique_id=284114787]
+position = Vector2(112, 7)
+shape = SubResource("Shape_Shelf224")
+one_way_collision = true
+
+[node name="Art" type="TextureRect" parent="Shelves/Shelf7" unique_id=890147335]
+texture_filter = 1
+offset_right = 224.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("5_sh")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Shelf8" type="AnimatableBody2D" parent="Shelves" unique_id=295564623]
+position = Vector2(2680, 280)
+script = ExtResource("2_move")
+travel = Vector2(0, 90)
+duration = 3.4
+phase = 1.2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf8" unique_id=1977300626]
+position = Vector2(80, 7)
+shape = SubResource("Shape_Shelf160")
+one_way_collision = true
+
+[node name="Art" type="TextureRect" parent="Shelves/Shelf8" unique_id=896077333]
+texture_filter = 1
+offset_right = 160.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("5_sh")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Shelf9" type="StaticBody2D" parent="Shelves" unique_id=1937925382]
+position = Vector2(2900, 230)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf9" unique_id=1388654046]
+position = Vector2(144, 7)
+shape = SubResource("Shape_Shelf288")
+one_way_collision = true
+
+[node name="Art" type="TextureRect" parent="Shelves/Shelf9" unique_id=835363073]
+texture_filter = 1
+offset_right = 288.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("5_sh")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="ExitDoor" parent="." unique_id=172347043 instance=ExtResource("8_door")]
+position = Vector2(3100, 230)
+target_scene = ""
+prompt_text = "[E] Lanjut"
+
+[node name="Player" parent="." unique_id=1029444179 instance=ExtResource("6_ply")]
+position = Vector2(160, 770)
+jump_velocity = -560.0
+
+[node name="BookKeeper" parent="." unique_id=81513943 node_paths=PackedStringArray("player") instance=ExtResource("7_bk")]
+position = Vector2(500, 780)
+speed = 70.0
+chase_speed = 200.0
+patrol_distance = 260.0
+player = NodePath("../Player")
+
+[node name="BookKeeper2" parent="." unique_id=1947617286 node_paths=PackedStringArray("player") instance=ExtResource("7_bk")]
+position = Vector2(1500, 780)
+speed = 70.0
+chase_speed = 200.0
+patrol_distance = 300.0
+player = NodePath("../Player")
+
+[node name="BookKeeper3" parent="." unique_id=1310844771 node_paths=PackedStringArray("player") instance=ExtResource("7_bk")]
+position = Vector2(1888, 418)
+chase_speed = 200.0
+patrol_distance = 80.0
+player = NodePath("../Player")
+
+[node name="BookKeeper4" parent="." unique_id=543005477 node_paths=PackedStringArray("player") instance=ExtResource("7_bk")]
+position = Vector2(2500, 780)
+speed = 70.0
+chase_speed = 200.0
+patrol_distance = 260.0
+player = NodePath("../Player")

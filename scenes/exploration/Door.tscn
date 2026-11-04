@@ -1,3 +1,72 @@
 [gd_scene format=3 uid="uid://b8dkckvndru4s"]
 
-[node name="Door" type="Node2D" unique_id=1058883524]
+[ext_resource type="Script" path="res://scenes/exploration/Door.gd" id="1_door"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_door"]
+size = Vector2(48, 72)
+
+[node name="Door" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_door")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -36)
+shape = SubResource("RectangleShape2D_door")
+
+[node name="Glow" type="ColorRect" parent="."]
+offset_left = -36.0
+offset_top = -86.0
+offset_right = 36.0
+offset_bottom = 0.0
+mouse_filter = 2
+color = Color(0.65, 0.2, 1, 0.22)
+
+[node name="Frame" type="ColorRect" parent="."]
+offset_left = -30.0
+offset_top = -80.0
+offset_right = 30.0
+offset_bottom = 0.0
+mouse_filter = 2
+color = Color(0.1, 0.05, 0.16, 1)
+
+[node name="Panel" type="ColorRect" parent="."]
+offset_left = -24.0
+offset_top = -72.0
+offset_right = 24.0
+offset_bottom = 0.0
+mouse_filter = 2
+color = Color(0.23, 0.08, 0.4, 1)
+
+[node name="LineTop" type="ColorRect" parent="."]
+offset_left = -24.0
+offset_top = -48.0
+offset_right = 24.0
+offset_bottom = -46.0
+mouse_filter = 2
+color = Color(0.13, 0.04, 0.24, 1)
+
+[node name="LineBottom" type="ColorRect" parent="."]
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = -22.0
+mouse_filter = 2
+color = Color(0.13, 0.04, 0.24, 1)
+
+[node name="Handle" type="ColorRect" parent="."]
+offset_left = 14.0
+offset_top = -38.0
+offset_right = 19.0
+offset_bottom = -33.0
+mouse_filter = 2
+color = Color(0.95, 0.65, 0.25, 1)
+
+[node name="Prompt" type="Label" parent="."]
+offset_left = -90.0
+offset_top = -112.0
+offset_right = 90.0
+offset_bottom = -88.0
+theme_override_font_sizes/font_size = 12
+text = "[E] Masuk"
+horizontal_alignment = 1
