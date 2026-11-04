@@ -7,6 +7,12 @@ signal enemy_hp_updated(current: int, max: int)
 signal shield_updated(player_block: int, enemy_block: int)
 signal turn_changed(turn_owner: String)
 signal battle_finished(result: String)
+signal enemy_intent_updated(action: String, damage: int)
+signal player_evaded(success: bool)
+
+# Aksi musuh yang sedang "ditampilkan" ke pemain
+var enemy_planned_action: String = ""
+var enemy_planned_damage: int = 0
 
 const RECORD_PATH := "user://battle_records.jsonl"
 const MODEL_PATH := "res://data/decision_tree_rewards.json"
@@ -90,21 +96,41 @@ func setup_battle(enemy_data: Resource) -> void:
 	_load_learning_model()
 	print("[AI Training] Catatan pertandingan: ", OS.get_user_data_dir().path_join("battle_records.jsonl"))
 
-	start_player_turn()
+	plan_enemy_turn()
 
 var player_evade_active: bool = false
 
-func start_player_turn() -> void:
-	if is_battle_over:
-		return
-
+func plan_enemy_turn() -> void:
+	if is_battle_over: return
+	
+	# Musuh memilih aksi menggunakan AI (fungsi yang sudah ada)
+	var base_damage: int = enemy_pattern[enemy_turn_index % enemy_pattern.size()]
+	var features: Dictionary = _build_state_features(base_damage + enemy_damage_bonus)
+	var action: String = _choose_enemy_action(features)
+	
+	# Simpan rencana musuh
+	enemy_planned_action = action
+	enemy_planned_damage = base_damage + enemy_damage_bonus
+	
+	# Catat untuk training AI
+	current_decision = {
+		"episode_id": episode_id,
+		"step": decision_step,
+		"features": features,
+		"action": action,
+		"player_hp_start": player_hp,
+		"enemy_hp_start": enemy_hp
+	}
+	decision_step += 1
+	
+	print("[Enemy AI] Merencanakan: ", action, " | damage: ", enemy_planned_damage)
+	
+	# Pindah giliran ke player
 	turn = "player"
-
-	player_block = 0
-	player_evade_active = false
-
-	shield_updated.emit(player_block, enemy_block)
 	turn_changed.emit("player")
+	
+	# Tampilkan informasi ke UI (akan kita tangkap di battle.gd)
+	enemy_intent_updated.emit(action, enemy_planned_damage)
 
 func choose_player_action(action: String) -> void:
 	if is_battle_over or turn != "player":
@@ -137,13 +163,18 @@ func choose_player_action(action: String) -> void:
 			# Peluang menghindar diperiksa saat musuh menyerang.
 			player_evade_active = true
 			print("[Battle] Bersiap menghindar!")
-
-		_:
-			return
+			
+	if is_battle_over: return
+	
+	turn = "enemy"
+	turn_changed.emit("enemy")
+	_execute_enemy_planned_action()
 
 	# Setiap aksi pemain langsung mengakhiri gilirannya.
 	if not is_battle_over:
-		enemy_turn()
+		await get_tree().create_timer(1.0).timeout
+		if not is_battle_over:
+			plan_enemy_turn()
 
 
 func draw_cards(amount: int) -> void:
@@ -188,67 +219,6 @@ func play_card(card: Resource) -> void:
 	discard_pile.append(card)
 	hand_updated.emit(hand)
 	print("[Battle] Main kartu: ", card_name)
-
-
-func end_player_turn() -> void:
-	if is_battle_over or turn != "player":
-		return
-	for card in hand:
-		discard_pile.append(card)
-	hand.clear()
-	hand_updated.emit(hand)
-	enemy_turn()
-
-
-func enemy_turn() -> void:
-	if is_battle_over:
-		return
-
-	# Tutup catatan aksi musuh sebelumnya setelah seluruh respons Player terjadi.
-	_finalize_current_decision(false, "")
-	# Block musuh bertahan melewati giliran Player, lalu sisa block dibersihkan di sini.
-	enemy_block = 0
-	shield_updated.emit(player_block, enemy_block)
-
-	turn = "enemy"
-	turn_changed.emit("enemy")
-
-	var base_damage: int = enemy_pattern[enemy_turn_index % enemy_pattern.size()]
-	var features: Dictionary = _build_state_features(base_damage + enemy_damage_bonus)
-	var action: String = _choose_enemy_action(features)
-	current_decision = {
-		"episode_id": episode_id,
-		"step": decision_step,
-		"features": features,
-		"action": action,
-		"player_hp_start": player_hp,
-		"enemy_hp_start": enemy_hp
-	}
-	decision_step += 1
-	last_enemy_action = action
-	print("[Enemy AI] Pilihan: ", action, " | fitur: ", features)
-
-	match action:
-		"ATTACK":
-			var damage: int = base_damage + enemy_damage_bonus
-			enemy_turn_index += 1
-			enemy_damage_bonus = 0
-			enemy_enhance_ready = true
-			print("[Battle] Musuh menyerang! Damage: ", damage)
-			deal_damage_to_player(damage)
-		"DEFENSE":
-			enemy_block += DEFENSE_BLOCK
-			shield_updated.emit(player_block, enemy_block)
-			print("[Battle] Musuh bertahan, mendapat ", DEFENSE_BLOCK, " Block.")
-		"ENHANCE":
-			enemy_damage_bonus += ENHANCE_BONUS
-			enemy_enhance_ready = false
-			print("[Battle] Musuh meningkatkan serangan berikutnya +", ENHANCE_BONUS, ".")
-
-	await get_tree().create_timer(1.0).timeout
-	if not is_battle_over:
-		start_player_turn()
-
 
 func _build_state_features(current_enemy_damage: int) -> Dictionary:
 	var expected_player_damage: float = _estimate_next_player_damage()
@@ -438,11 +408,12 @@ func deal_damage_to_enemy(amount: int) -> void:
 func deal_damage_to_player(amount: int) -> void:
 	if player_evade_active:
 		player_evade_active = false
-
-		if randf() < 0.50:
-			print("[Battle] Evade berhasil! Tidak menerima damage.")
+		var success = randf() < 0.50
+		player_evaded.emit(success) # <--- Tambahkan ini
+		
+		if success:
+			print("[Battle] Evade berhasil!")
 			return
-
 		print("[Battle] Evade gagal!")
 
 	var actual: int = maxi(0, amount - player_block)
@@ -471,3 +442,26 @@ func finish_battle(result: String) -> void:
 	_finalize_current_decision(true, result)
 	battle_finished.emit(result)
 	print("[Battle] Selesai: ", result)
+
+func _execute_enemy_planned_action() -> void:
+	_finalize_current_decision(false, "")
+	enemy_block = 0
+	shield_updated.emit(player_block, enemy_block)
+	
+	last_enemy_action = enemy_planned_action
+	print("[Battle] Musuh eksekusi: ", enemy_planned_action)
+	
+	match enemy_planned_action:
+		"ATTACK":
+			enemy_turn_index += 1
+			enemy_damage_bonus = 0
+			enemy_enhance_ready = true
+			deal_damage_to_player(enemy_planned_damage)
+		"DEFENSE":
+			enemy_block += DEFENSE_BLOCK
+			shield_updated.emit(player_block, enemy_block)
+			print("[Battle] Musuh bertahan.")
+		"ENHANCE":
+			enemy_damage_bonus += ENHANCE_BONUS
+			enemy_enhance_ready = false
+			print("[Battle] Musuh enhance +", ENHANCE_BONUS)
