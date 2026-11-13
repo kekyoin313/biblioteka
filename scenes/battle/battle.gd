@@ -1,7 +1,6 @@
 extends Node2D
 
 const CARD_SCENE = preload("res://scenes/battle/Card.tscn")
-const UPGRADE_BOOK = preload("res://scenes/ui/upgrade_book.gd")
 const SHIELD_BAR_MAX: float = 30.0
 const PLAYER_HURT: Texture2D = preload("res://assets/sprites/Player/Player_mata tertutup.png")
 
@@ -57,7 +56,6 @@ func _ready() -> void:
 	BattleManager.battle_finished.connect(_on_battle_finished)
 	BattleManager.enemy_intent_updated.connect(_on_enemy_intent_updated)
 	BattleManager.player_evaded.connect(_on_player_evaded)
-	BattleManager.enemy_evaded.connect(_on_enemy_evaded)
 	result_label.visible = false
 	energy_label.text = "PILIH SATU AKSI"
 	_create_action_buttons()
@@ -74,6 +72,7 @@ func _ready() -> void:
 
 	BattleManager.setup_battle(GameManager.current_enemy_data)
 
+	# Initialize HP display because setup does not emit initial HP signals.
 	_on_player_hp_updated(BattleManager.player_hp, BattleManager.player_max_hp)
 	_on_enemy_hp_updated(BattleManager.enemy_hp, BattleManager.enemy_max_hp)
 	_on_shield_updated(BattleManager.player_block, BattleManager.enemy_block)
@@ -88,6 +87,7 @@ func _ready() -> void:
 		enemy_name_label.text = "Musuh Misterius"
 		print("[Battle] Tidak ada data musuh, pakai default")
 		
+		# Sembunyikan UI sementara sebelum animasi masuk
 	enemy_name_label.modulate.a = 0.0
 	enemy_hp_bar.modulate.a = 0.0
 	enemy_intent_label.modulate.a = 0.0
@@ -100,6 +100,7 @@ func _ready() -> void:
 	if player_hp_number: player_hp_number.modulate.a = 0.0
 	if enemy_hp_number: enemy_hp_number.modulate.a = 0.0
 	
+	# Panggil animasi masuk
 	call_deferred("_play_intro_animation")
 
 func _on_enemy_intent_updated(action: String, damage: int) -> void:
@@ -111,11 +112,8 @@ func _on_enemy_intent_updated(action: String, damage: int) -> void:
 			enemy_intent_label.text = "🛡️ Akan Bertahan"
 			enemy_intent_label.modulate = Color.BLUE
 		"ENHANCE":
-			enemy_intent_label.text = "⚡ Memperkuat Diri (serangan berikut: %d)" % damage
+			enemy_intent_label.text = "⚡ Akan Memperkuat Diri"
 			enemy_intent_label.modulate = Color.YELLOW
-		"EVADE":
-			enemy_intent_label.text = "💨 Bersiap Menghindar"
-			enemy_intent_label.modulate = Color.CYAN
 		_:
 			enemy_intent_label.text = ""
 			
@@ -218,6 +216,7 @@ func _on_enemy_hp_updated(current: int, max_val: int) -> void:
 		if GameManager.current_enemy_data != null:
 			hurt_tex = GameManager.current_enemy_data.hurt_sprite
 			
+		# Panggil efek hit dengan data yang dinamis
 		_play_hit_effect(enemy_sprite, hurt_tex)
 		
 	last_enemy_hp = current
@@ -256,27 +255,27 @@ func _on_turn_changed(turn_owner: String) -> void:
 				child.disabled = true
 
 func _on_battle_finished(result: String) -> void:
+	# Matikan interaksi tombol
 	for child in hand_container.get_children():
 		if child is BaseButton:
 			child.disabled = true
 			
+	# Set teks hasil
 	if result == "win":
 		result_label.text = "MENANG!"
-		result_label.modulate = Color.GOLD 
+		result_label.modulate = Color.GOLD # Warna emas kalau menang
 	else:
 		result_label.text = "KALAH"
-		result_label.modulate = Color.RED 
+		result_label.modulate = Color.RED # Warna merah kalau kalah
 
+	# Jalankan animasi keluar (sembunyikan UI, munculkan tulisan)
 	await _play_outro_animation(result == "win")
 	
-
+	# Tunggu sebentar agar pemain bisa menikmati hasilnya
 	await get_tree().create_timer(1.5).timeout
 	
+	# Kembali ke eksplorasi / game over
 	if result == "win":
-		var book: CanvasLayer = UPGRADE_BOOK.new()
-		add_child(book)
-		var choice: String = await book.chosen
-		GameManager.apply_upgrade(choice)
 		GameManager.end_battle("win")
 	else:
 		GameManager.end_battle("lose")
@@ -303,6 +302,7 @@ func _create_action_buttons() -> void:
 	for child in hand_container.get_children():
 		child.queue_free()
 
+	# Posisikan ketiga gambar di tengah bawah.
 	hand_container.anchor_left = 0.5
 	hand_container.anchor_right = 0.5
 	hand_container.anchor_top = 1.0
@@ -321,7 +321,7 @@ func _create_action_buttons() -> void:
 		{
 			"id": "ATTACK",
 			"texture": ATTACK_CARD_TEXTURE,
-			"tooltip": "Damage %d, 20%% critical (x2)" % GameManager.player_base_damage
+			"tooltip": "20% critical hit, damage ganda"
 		},
 		{
 			"id": "DEFENSE",
@@ -355,10 +355,11 @@ func _create_action_buttons() -> void:
 func _on_action_pressed(action: String) -> void:
 	BattleManager.choose_player_action(action)
 
+# Fungsi untuk spawn floating text
 func spawn_floating_text(text: String, color: Color, target_node: Node, offset: Vector2 = Vector2.ZERO) -> void:
 	var ft = FloatingText.new()
-	ui_layer.add_child(ft)
-
+	ui_layer.add_child(ft) # Tambahkan ke scene Battle
+	# Hitung posisi tengah dari target (Player / Enemy)
 	var spawn_pos = target_node.global_position + offset
 	var random_offset = Vector2(randf_range(-20, 20), randf_range(-10, 10))
 	ft.play(text, color, spawn_pos + random_offset)
@@ -369,56 +370,62 @@ func _on_player_evaded(success: bool) -> void:
 	else:
 		spawn_floating_text("Miss!", Color.GRAY, player_sprite, Vector2(0, -120))
 
-func _on_enemy_evaded(success: bool) -> void:
-	if success:
-		spawn_floating_text("Menghindar!", Color.CYAN, enemy_sprite, Vector2(0, -120))
-	else:
-		spawn_floating_text("Gagal!", Color.GRAY, enemy_sprite, Vector2(0, -120))
-
 func _shake_node(node: Control, intensity: float = 10.0, duration: float = 0.3) -> void:
 	if not node: return
 	
 	var original_pos = node.position
 	var tween = create_tween()
 	
+	# Bergetar ke kiri kanan selama durasi tertentu
 	var steps = int(duration / 0.05) 
 	for i in range(steps):
 		var offset = Vector2(randf_range(-intensity, intensity), randf_range(-intensity, intensity))
 		tween.tween_property(node, "position", original_pos + offset, 0.03)
 		
+	# Kembalikan ke posisi semula
 	tween.tween_property(node, "position", original_pos, 0.05)
 	
 func _play_hit_effect(sprite: TextureRect, hurt_texture: Texture2D) -> void:
 	if not sprite: return
 	
+	# 1. Simpan tekstur asli (karena player punya animasi kedip mata)
 	var original_texture = sprite.texture
 	
-
+	# 2. Ganti ke tekstur sakit (jika ada)
 	if hurt_texture != null:
 		sprite.texture = hurt_texture
 		
-	sprite.modulate = Color(2.0, 0.5, 0.5)
+	# 3. Beri warna merah sejenak (Modulate)
+	sprite.modulate = Color(2.0, 0.5, 0.5) # Merah terang
 	
+	# 4. Getarkan sprite
 	_shake_node(sprite, 15.0, 0.3)
 	
+	# 5. Tunggu sebentar (0.3 detik), lalu kembalikan semuanya
 	await get_tree().create_timer(0.3).timeout
 	
+	# Pastikan sprite belum dihapus dari scene
 	if is_instance_valid(sprite):
-		sprite.modulate = Color.WHITE
+		sprite.modulate = Color.WHITE # Kembalikan normal
 		
+		# Jika ini Player, kembalikan ke tekstur mata aslinya
+		# (supaya loop kedipan mata tidak rusak)
 		if sprite == player_sprite:
 			sprite.texture = EYES_OPEN
 		elif hurt_texture != null:
 			sprite.texture = original_texture
 
 func _play_intro_animation() -> void:
+	# Tunggu sebentar biar layar fade in dari SceneTransition selesai
 	await get_tree().create_timer(0.3).timeout
 	
 	var tween = create_tween().set_parallel(true)
 	
+	# 1. Munculkan Sprite (Fade in)
 	tween.tween_property(player_sprite, "modulate:a", 1.0, 0.5)
 	tween.tween_property(enemy_sprite, "modulate:a", 1.0, 0.5)
 	
+	# 2. Munculkan UI (Fade in dengan delay sedikit biar bergantian)
 	tween.tween_property(enemy_name_label, "modulate:a", 1.0, 0.4).set_delay(0.3)
 	tween.tween_property(enemy_hp_bar, "modulate:a", 1.0, 0.4).set_delay(0.4)
 	if enemy_hp_number: tween.tween_property(enemy_hp_number, "modulate:a", 1.0, 0.4).set_delay(0.4)
@@ -429,11 +436,13 @@ func _play_intro_animation() -> void:
 	tween.tween_property(turn_label, "modulate:a", 1.0, 0.4).set_delay(0.6)
 	tween.tween_property(energy_label, "modulate:a", 1.0, 0.4).set_delay(0.6)
 	
+	# 3. Animasi Hand Container meluncur dari bawah
 	var original_hand_y = hand_container.position.y
-	hand_container.position.y += 100 
-	hand_container.modulate.a = 1.0  
+	hand_container.position.y += 100 # Geser ke bawah dulu
+	hand_container.modulate.a = 1.0  # Langsung set visible
 	tween.tween_property(hand_container, "position:y", original_hand_y, 0.5).set_delay(0.7).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	
+	# 4. Animasi Sprite sedikit "maju" (pop)
 	player_sprite.scale = Vector2(0.8, 0.8)
 	enemy_sprite.scale = Vector2(0.8, 0.8)
 	tween.tween_property(player_sprite, "scale", Vector2(1.0, 1.0), 0.4).set_delay(0.1).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -442,6 +451,7 @@ func _play_intro_animation() -> void:
 func _play_outro_animation(is_win: bool) -> void:
 	var tween = create_tween().set_parallel(true)
 	
+	# 1. Sembunyikan semua UI (kecuali sprite)
 	tween.tween_property(enemy_name_label, "modulate:a", 0.0, 0.3)
 	tween.tween_property(enemy_hp_bar, "modulate:a", 0.0, 0.3)
 	tween.tween_property(enemy_intent_label, "modulate:a", 0.0, 0.3)
@@ -451,6 +461,7 @@ func _play_outro_animation(is_win: bool) -> void:
 	tween.tween_property(turn_label, "modulate:a", 0.0, 0.3)
 	tween.tween_property(energy_label, "modulate:a", 0.0, 0.3)
 	
+	# Hand Container turun ke bawah lalu hilang
 	var current_hand_y = hand_container.position.y
 	tween.tween_property(hand_container, "position:y", current_hand_y + 100, 0.3)
 	tween.tween_property(hand_container, "modulate:a", 0.0, 0.3)
@@ -471,14 +482,14 @@ func _play_outro_animation(is_win: bool) -> void:
 		tween.tween_property(player_sprite, "scale", Vector2(0.5, 0.5), 0.5)
 		tween.tween_property(enemy_sprite, "scale", Vector2(1.2, 1.2), 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
-	await tween.finished 
+	# 3. Munculkan Teks MENANG / KALAH dengan efek Pop
+	await tween.finished # Tunggu UI hilang dulu baru teks muncul
 	
 	result_label.modulate.a = 0.0
 	result_label.scale = Vector2(0.2, 0.2)
-	result_label.pivot_offset = result_label.size / 2 
+	result_label.pivot_offset = result_label.size / 2 # Agar scale dari tengah
 	result_label.visible = true
 	
 	var text_tween = create_tween().set_parallel(true)
 	text_tween.tween_property(result_label, "modulate:a", 1.0, 0.4)
 	text_tween.tween_property(result_label, "scale", Vector2(1.0, 1.0), 0.6).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
-	

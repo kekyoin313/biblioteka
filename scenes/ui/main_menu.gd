@@ -1,16 +1,16 @@
 extends Control
 
+# Sesuaikan nama node ini dengan nama node tombol di scene Main Menu kamu
 @onready var adventure_btn = $VBoxContainer/NewGameBtn
 @onready var load_btn = $VBoxContainer/LoadGameBtn
 @onready var exit_btn = $VBoxContainer/ExitBtn
 
 func _ready() -> void:
+	# Cek apakah ada file save. Kalau tidak ada, sembunyikan tombol Load
 	load_btn.disabled = not FileAccess.file_exists("user://biblioteka_save.json")
-	AudioManager.play_bgm(
-    "res://assets/audio/bgm/background_audio.mp3"
-)
 
 func _on_adventure_pressed() -> void:
+	# 1. Reset semua progress game (HP, kartu, area)
 	GameManager.reset_game()
 	
 	# 2. Setup awal untuk game baru
