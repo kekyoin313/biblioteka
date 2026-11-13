@@ -1,16 +1,15 @@
 extends Node
+## GameManager: menyimpan state global game (HP, progress, area)
 
 signal hp_changed(new_hp: int, max_hp: int)
 signal battle_started(enemy_data: Resource)
 signal battle_ended(result: String)
 
+# === Player State ===
 var player_max_hp: int = 100
 var player_hp: int = 100
-const START_BASE_DAMAGE: int = 8
-const UPGRADE_DAMAGE: int = 5
-const UPGRADE_HP: int = 10
 
-var player_base_damage: int = START_BASE_DAMAGE
+# === Progress ===
 var current_area: String = "area_1"
 var defeated_bosses: Array[String] = []
 var opened_chests: Array[String] = []
@@ -28,12 +27,11 @@ var current_enemy_data: Resource = null
 
 func reset_game() -> void:
 	player_hp = player_max_hp
-	player_base_damage = START_BASE_DAMAGE
 	current_area = "area_1_lobby"
 	defeated_bosses.clear()
 	opened_chests.clear()
 	unlocked_doors.clear()
-	
+
 func set_hp(value: int) -> void:
 	player_hp = clamp(value, 0, player_max_hp)
 	hp_changed.emit(player_hp, player_max_hp)
@@ -145,12 +143,3 @@ func _go_to_battle() -> void:
 	
 func is_enemy_defeated(enemy_id: String) -> bool:
 	return not enemy_id.is_empty() and enemy_id in defeated_enemies
-	
-func apply_upgrade(kind: String) -> void:
-	match kind:
-		"DAMAGE":
-			player_base_damage += UPGRADE_DAMAGE
-		"HP":
-			player_max_hp += UPGRADE_HP
-			player_hp = mini(player_max_hp, player_hp + UPGRADE_HP)
-			hp_changed.emit(player_hp, player_max_hp)

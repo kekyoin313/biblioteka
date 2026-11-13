@@ -12,8 +12,8 @@ func _ready() -> void:
 	add_theme_constant_override("outline_size", 6)
 	add_theme_color_override("font_outline_color", Color.BLACK)
 
-func play(message: String, color: Color, start_pos: Vector2, direction: Vector2 = Vector2.UP) -> void:
-	self.text = message
+func play(text: String, color: Color, start_pos: Vector2, direction: Vector2 = Vector2.UP) -> void:
+	self.text = text
 	modulate = color
 	position = start_pos
 	

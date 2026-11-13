@@ -9,7 +9,6 @@ signal turn_changed(turn_owner: String)
 signal battle_finished(result: String)
 signal enemy_intent_updated(action: String, damage: int)
 signal player_evaded(success: bool)
-signal enemy_evaded(success: bool)
 
 # Aksi musuh yang sedang "ditampilkan" ke pemain
 var enemy_planned_action: String = ""
@@ -17,11 +16,6 @@ var enemy_planned_damage: int = 0
 
 const RECORD_PATH := "user://battle_records.jsonl"
 const MODEL_PATH := "res://data/decision_tree_rewards.json"
-const SFX_ATTACK_MC := "res://assets/audio/sfx/attack_mc_1.mp3"
-const SFX_ATTACK_ENEMY := "res://assets/audio/sfx/attack_enemy.mp3"
-const SFX_DEFENSE_MC := "res://assets/audio/sfx/defence_up_mc.mp3"
-const SFX_ATTACK_CARD := "res://assets/audio/sfx/attack_mc_2.mp3"
-
 const FEATURES: Array[String] = [
 	"enemy_hp_ratio",
 	"player_hp_ratio",
@@ -146,11 +140,10 @@ func choose_player_action(action: String) -> void:
 
 	match action:
 		"ATTACK":
+			# Serangan dasar 6 damage.
+			# Peluang critical 20% menghasilkan 12 damage.
 			var is_critical: bool = randf() < 0.20
-			var base_damage: int = GameManager.player_base_damage
-			var damage: int = base_damage * 2 if is_critical else base_damage
-			AudioManager.play_sfx(SFX_ATTACK_MC)
-
+			var damage: int = 12 if is_critical else 6
 
 			if is_critical:
 				print("[Battle] CRITICAL HIT! Damage: ", damage)
@@ -163,7 +156,7 @@ func choose_player_action(action: String) -> void:
 			# Shield sebesar 20% HP maksimal pemain.
 			player_block = int(round(player_max_hp * 0.20))
 			shield_updated.emit(player_block, enemy_block)
-			AudioManager.play_sfx(SFX_DEFENSE_MC)
+
 			print("[Battle] Defense! Shield: ", player_block)
 
 		"EVADE":
@@ -214,7 +207,6 @@ func play_card(card: Resource) -> void:
 	energy_updated.emit(player_energy, player_max_energy)
 
 	if damage > 0:
-		AudioManager.play_sfx(SFX_ATTACK_CARD)
 		deal_damage_to_enemy(damage)
 	if block > 0 and not is_battle_over:
 		player_block += block
@@ -245,8 +237,9 @@ func _build_state_features(current_enemy_damage: int) -> Dictionary:
 
 
 func _estimate_next_player_damage() -> float:
-	# Perkiraan damage Attack: 80% x base + 20% x 2*base = 1.2 x base
-	return float(GameManager.player_base_damage) * 1.2
+	# Perkiraan damage Attack:
+	# 80% x 6 + 20% x 12 = 7.2
+	return 7.2
 
 
 func _estimate_player_damage_this_turn() -> float:
@@ -457,11 +450,9 @@ func _execute_enemy_planned_action() -> void:
 	
 	last_enemy_action = enemy_planned_action
 	print("[Battle] Musuh eksekusi: ", enemy_planned_action)
-
 	
 	match enemy_planned_action:
 		"ATTACK":
-			AudioManager.play_sfx(SFX_ATTACK_ENEMY)
 			enemy_turn_index += 1
 			enemy_damage_bonus = 0
 			enemy_enhance_ready = true
@@ -474,4 +465,3 @@ func _execute_enemy_planned_action() -> void:
 			enemy_damage_bonus += ENHANCE_BONUS
 			enemy_enhance_ready = false
 			print("[Battle] Musuh enhance +", ENHANCE_BONUS)
-			
