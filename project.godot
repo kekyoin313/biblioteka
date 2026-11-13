@@ -22,6 +22,7 @@ DeckManager="*uid://bwyduk57hlb38"
 GameManager="*uid://dhr6l0f6kyolb"
 SceneTransition="*uid://ho6wcqwf5c5e"
 BattleManager="*uid://bghc3pggm04mf"
+PauseMenu="*res://scenes/ui/PauseMenu.tscn"
 
 [input]
 

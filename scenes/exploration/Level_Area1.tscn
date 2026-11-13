@@ -5,6 +5,9 @@
 [ext_resource type="PackedScene" uid="uid://xjq2c56pl2b4" path="res://scenes/exploration/Enemies/MagicalBook.tscn" id="3_4opvy"]
 [ext_resource type="PackedScene" uid="uid://c3fm8m6jxmfsv" path="res://scenes/exploration/Enemies/BookKeeper.tscn" id="4_qw5yn"]
 [ext_resource type="Texture2D" uid="uid://dkuvn32cws7vf" path="res://assets/stage1_background.png" id="5_3t37g"]
+[ext_resource type="PackedScene" uid="uid://b8dkckvndru4s" path="res://scenes/exploration/Door.tscn" id="mock_door"]
+[ext_resource type="Texture2D" uid="uid://bgn2h7h5ujat7" path="res://assets/stage1_ground.png" id="mock_tex_ground"]
+[ext_resource type="Texture2D" uid="uid://bu4c6vfd1kqtb" path="res://assets/stage1_platform.png" id="mock_tex_platform"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6hx5d"]
 texture = ExtResource("5_3t37g")
@@ -8015,11 +8018,58 @@ sources/0 = SubResource("TileSetAtlasSource_6hx5d")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_67mqo"]
 size = Vector2(2814, 60)
 
+[sub_resource type="RectangleShape2D" id="MockShape_Platform1"]
+size = Vector2(525.6, 22.8)
+
+[sub_resource type="RectangleShape2D" id="MockShape_Platform2"]
+size = Vector2(252, 19.2)
+
+[sub_resource type="RectangleShape2D" id="MockShape_Platform3"]
+size = Vector2(1342.8, 24)
+
+[sub_resource type="RectangleShape2D" id="MockShape_Platform4"]
+size = Vector2(864, 24)
+
+[sub_resource type="RectangleShape2D" id="MockShape_Platform5"]
+size = Vector2(572.4, 21.6)
+
+[sub_resource type="RectangleShape2D" id="MockShape_Platform6"]
+size = Vector2(252, 18.6)
+
+[sub_resource type="RectangleShape2D" id="MockShape_Platform7"]
+size = Vector2(259.2, 16.8)
+
+[sub_resource type="RectangleShape2D" id="MockShape_Platform8"]
+size = Vector2(525.6, 22.8)
+
+[sub_resource type="RectangleShape2D" id="MockShape_Platform9"]
+size = Vector2(453.6, 20.4)
+
+[sub_resource type="RectangleShape2D" id="MockShape_Platform10"]
+size = Vector2(356.4, 22.8)
+
+[sub_resource type="RectangleShape2D" id="MockShape_Platform11"]
+size = Vector2(507.6, 19.2)
+
+[sub_resource type="RectangleShape2D" id="MockShape_FloorExtension"]
+size = Vector2(386, 60)
+
+[sub_resource type="RectangleShape2D" id="MockShape_BarrierLeft"]
+size = Vector2(40, 860)
+
+[sub_resource type="RectangleShape2D" id="MockShape_BarrierRight"]
+size = Vector2(40, 860)
+
+[sub_resource type="AtlasTexture" id="MockAtlas_platform"]
+atlas = ExtResource("mock_tex_platform")
+region = Rect2(0, 0, 24, 16)
+
+[sub_resource type="AtlasTexture" id="MockAtlas_ground"]
+atlas = ExtResource("mock_tex_ground")
+region = Rect2(2814, 0, 386, 112)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xrivr"]
 size = Vector2(241, 17)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_13qdw"]
-size = Vector2(12, 80)
 
 [node name="Level" type="Node2D" unique_id=90229433]
 
@@ -8038,30 +8088,356 @@ shape = SubResource("RectangleShape2D_67mqo")
 tile_map_data = PackedByteArray("AAAAABkAAAAAAAEAAAABABkAAAAAAAEAAAACABkAAAAAAAEAAAADABkAAAAAAAEAAAAEABkAAAAAAAEAAAAFABkAAAAAAAEAAAAGABkAAAAAAAEAAAAHABkAAAAAAAEAAAAIABkAAAAAAAEAAAAJABkAAAAAAAEAAAAKABkAAAAAAAEAAAALABkAAAAAAAEAAAAMABkAAAAAAAEAAAANABkAAAAAAAEAAAAOABkAAAAAAAEAAAAPABkAAAAAAAEAAAAQABkAAAAAAAEAAAARABkAAAAAAAEAAAASABkAAAAAAAEAAAATABkAAAAAAAEAAAAUABkAAAAAAAEAAAAVABkAAAAAAAEAAAAWABkAAAAAAAEAAAAXABkAAAAAAAEAAAAYABkAAAAAAAEAAAAZABkAAAAAAAEAAAAaABkAAAAAAAEAAAAbABkAAAAAAAEAAAAcABkAAAAAAAEAAAAdABkAAAAAAAEAAAAeABkAAAAAAAEAAAAfABkAAAAAAAEAAAAgABkAAAAAAAEAAAAhABkAAAAAAAEAAAAiABkAAAAAAAEAAAAjABkAAAAAAAEAAAAkABkAAAAAAAEAAAAlABkAAAAAAAEAAAAmABkAAAAAAAEAAAAnABkAAAAAAAEAAAAoABkAAAAAAAEAAAApABkAAAAAAAEAAAAqABkAAAAAAAEAAAArABkAAAAAAAEAAAAsABkAAAAAAAEAAAAtABkAAAAAAAEAAAAuABkAAAAAAAEAAAAvABkAAAAAAAEAAAAwABkAAAAAAAEAAAAxABkAAAAAAAEAAAAyABkAAAAAAAEAAAAzABkAAAAAAAEAAAA0ABkAAAAAAAEAAAA1ABkAAAAAAAEAAAA2ABkAAAAAAAEAAAA3ABkAAAAAAAEAAAA4ABkAAAAAAAEAAAA5ABkAAAAAAAEAAAA6ABkAAAAAAAEAAAA7ABkAAAAAAAEAAAA8ABkAAAAAAAEAAAA9ABkAAAAAAAEAAAA+ABkAAAAAAAEAAAA/ABkAAAAAAAEAAABAABkAAAAAAAEAAABBABkAAAAAAAEAAABCABkAAAAAAAEAAABDABkAAAAAAAEAAABEABkAAAAAAAEAAABFABkAAAAAAAEAAABGABkAAAAAAAEAAABHABkAAAAAAAEAAABIABkAAAAAAAEAAABJABkAAAAAAAEAAABKABkAAAAAAAEAAAAAABoAAAAAAAIAAAABABoAAAAAAAIAAAACABoAAAAAAAIAAAADABoAAAAAAAIAAAAEABoAAAAAAAIAAAAFABsAAAAAAAIAAAAGABsAAAAAAAIAAAAHABsAAAAAAAIAAAAIABsAAAAAAAIAAAAJABsAAAAAAAIAAAAKABsAAAAAAAIAAAAKABoAAAAAAAIAAAALABoAAAAAAAIAAAAMABoAAAAAAAIAAAANABoAAAAAAAIAAAAOABoAAAAAAAIAAAAPABoAAAAAAAIAAAAFABoAAAAAAAIAAAAGABoAAAAAAAIAAAAHABoAAAAAAAIAAAAIABoAAAAAAAIAAAAJABoAAAAAAAIAAAAAABsAAAAAAAIAAAABABsAAAAAAAIAAAACABsAAAAAAAIAAAADABsAAAAAAAIAAAAEABsAAAAAAAIAAAAAABwAAAAAAAIAAAABABwAAAAAAAIAAAACABwAAAAAAAIAAAADABwAAAAAAAIAAAAEABwAAAAAAAIAAAAFABwAAAAAAAIAAAAGABwAAAAAAAIAAAAHABwAAAAAAAIAAAAIABwAAAAAAAIAAAAJABwAAAAAAAIAAAAKABwAAAAAAAIAAAALABwAAAAAAAIAAAAMABwAAAAAAAIAAAANABwAAAAAAAIAAAAOABwAAAAAAAIAAAAPABwAAAAAAAIAAAAQABwAAAAAAAIAAAARABwAAAAAAAIAAAASABwAAAAAAAIAAAATABwAAAAAAAIAAAAUABwAAAAAAAIAAAAVABwAAAAAAAIAAAALABsAAAAAAAIAAAAMABsAAAAAAAIAAAANABsAAAAAAAIAAAAOABsAAAAAAAIAAAAPABsAAAAAAAIAAAAQABsAAAAAAAIAAAARABsAAAAAAAIAAAAWABwAAAAAAAIAAAAWABsAAAAAAAIAAAAXABsAAAAAAAIAAAAVABsAAAAAAAIAAAAUABsAAAAAAAIAAAATABsAAAAAAAIAAAASABsAAAAAAAIAAAAQABoAAAAAAAIAAAARABoAAAAAAAIAAAASABoAAAAAAAIAAAATABoAAAAAAAIAAAAUABoAAAAAAAIAAAAVABoAAAAAAAIAAAAWABoAAAAAAAIAAAAXABoAAAAAAAIAAAAYABoAAAAAAAIAAAAZABoAAAAAAAIAAAAaABoAAAAAAAIAAAAbABoAAAAAAAIA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AABLABkAAAAAAAEAAABMABkAAAAAAAEAAABNABkAAAAAAAEAAABOABkAAAAAAAEAAABPABkAAAAAAAEAAABQABkAAAAAAAEAAABRABkAAAAAAAEAAABSABkAAAAAAAEAAABTABkAAAAAAAEAAABUABkAAAAAAAEAAABVABkAAAAAAAEAAABWABkAAAAAAAEAAABXABkAAAAAAAEAAABYABkAAAAAAAEAAABZABkAAAAAAAEAAABaABkAAAAAAAEAAABbABkAAAAAAAEAAABcABkAAAAAAAEAAABdABkAAAAAAAEAAABeABkAAAAAAAEAAABfABkAAAAAAAEAAABgABkAAAAAAAEAAABhABkAAAAAAAEAAABiABkAAAAAAAEAAABjABkAAAAAAAEAAABkABkAAAAAAAEAAABlABkAAAAAAAEAAABmABkAAAAAAAEAAABnABkAAAAAAAEAAABLABwAAAAAAAIAAABMABwAAAAAAAIAAABNABwAAAAAAAIAAABOABwAAAAAAAIAAABPABwAAAAAAAIAAABQABwAAAAAAAIAAABRABwAAAAAAAIAAABSABwAAAAAAAIAAABTABwAAAAAAAIAAABUABwAAAAAAAIAAABVABwAAAAAAAIAAABWABwAAAAAAAIAAABXABwAAAAAAAIAAABYABwAAAAAAAIAAABZABwAAAAAAAIAAABaABwAAAAAAAIAAABbABwAAAAAAAIAAABcABwAAAAAAAIAAABdABwAAAAAAAIAAABeABwAAAAAAAIAAABfABwAAAAAAAIAAABgABwAAAAAAAIAAABhABwAAAAAAAIAAABiABwAAAAAAAIAAABjABwAAAAAAAIAAABkABwAAAAAAAIAAABlABwAAAAAAAIAAABmABwAAAAAAAIAAABnABwAAAABAAIAAABnABsAAAABAAIAAABnABoAAAABAAIAAABcABoAAAAAAAIAAABbABoAAAAAAAIAAABaABoAAAAAAAIAAABZABoAAAAAAAIAAABYABoAAAAAAAIAAABXABoAAAAAAAIAAABWABoAAAAAAAIAAABVABoAAAAAAAIAAABUABoAAAAAAAIAAABTABoAAAAAAAIAAABSABoAAAAAAAIAAABRABoAAAAAAAIAAABQABoAAAAAAAIAAABPABoAAAAAAAIAAABOABoAAAAAAAIAAABNABoAAAAAAAIAAABMABoAAAAAAAIAAABLABoAAAAAAAIAAABLABsAAAAAAAIAAABMABsAAAAAAAIAAABNABsAAAAAAAIAAABOABsAAAAAAAIAAABPABsAAAAAAAIAAABQABsAAAAAAAIAAABRABsAAAAAAAIAAABSABsAAAAAAAIAAABTABsAAAAAAAIAAABUABsAAAAAAAIAAABVABsAAAAAAAIAAABWABsAAAAAAAIAAABXABsAAAAAAAIAAABYABsAAAAAAAIAAABZABsAAAAAAAIAAABaABsAAAAAAAIAAABbABsAAAAAAAIAAABcABsAAAAAAAIAAABdABsAAAAAAAIAAABdABoAAAAAAAIAAABeABoAAAAAAAIAAABeABsAAAAAAAIAAABfABsAAAAAAAIAAABfABoAAAAAAAIAAABgABoAAAAAAAIAAABgABsAAAAAAAIAAABhABsAAAAAAAIAAABhABoAAAAAAAIAAABiABoAAAAAAAIAAABiABsAAAAAAAIAAABjABsAAAAAAAIAAABjABoAAAAAAAIAAABkABoAAAAAAAIAAABkABsAAAAAAAIAAABlABsAAAAAAAIAAABlABoAAAAAAAIAAABmABoAAAAAAAIAAABmABsAAAAAAAIAAABoABkAAAAAAAEAAABpABkAAAABAAEAAABqABkAAAACAAEAAABrABkAAAAAAAEAAABsABkAAAABAAEAAABtABkAAAACAAEAAABuABkAAAAAAAEAAABvABkAAAAAAAEAAABwABkAAAABAAEAAABxABkAAAACAAEAAAByABkAAAAAAAEAAABzABkAAAABAAEAAAB0ABkAAAACAAEAAAB1ABkAAAAAAAEAAAB2ABkAAAABAAEAAAB3ABkAAAACAAEAAAB4ABkAAAAAAAEAAAB5ABkAAAABAAEAAAB6ABkAAAACAAEAAAB7ABkAAAAAAAEAAAB8ABkAAAABAAEAAAB9ABkAAAACAAEAAAB+ABkAAAAAAAEAAAB/ABkAAAABAAEAAACAABkAAAACAAEAAACBABkAAAAAAAEAAACCABkAAAABAAEAAACDABkAAAACAAEAAACEABkAAAAAAAEAAACFABkAAAABAAEAAACGABkAAAACAAEAAACHABkAAAAAAAEAAACIABkAAAABAAEAAACJABkAAAACAAEAAACKABkAAAAAAAEAAACLABkAAAABAAEAAACMABkAAAACAAEAAACNABkAAAAAAAEAAACOABkAAAABAAEAAACPABkAAAACAAEAAACQABkAAAAAAAEAAACRABkAAAABAAEAAACSABkAAAACAAEAAACTABkAAAAAAAEAAACUABkAAAABAAEAAACVABkAAAACAAEAAACWABkAAAAAAAEAAACXABkAAAABAAEAAACYABkAAAACAAEAAACZABkAAAAAAAEAAACaABkAAAABAAEAAACbABkAAAACAAEAAACcABkAAAAAAAEAAACdABkAAAABAAEAAACeABkAAAACAAEAAACfABkAAAAAAAEAAACgABkAAAABAAEAAAChABkAAAACAAEAAACiABkAAAAAAAEAAACjABkAAAABAAEAAACkABkAAAACAAEAAAClABkAAAAAAAEAAACmABkAAAABAAEAAACnABkAAAACAAEAAACoABkAAAAAAAEAAACpABkAAAABAAEAAACqABkAAAACAAEAAACrABkAAAAAAAEAAACsABkAAAABAAEAAACtABkAAAACAAEAAACuABkAAAAAAAEAAACvABkAAAABAAEAAACiABoAAAACAAIAAACjABoAAAABAAIAAACkABoAAAACAAIAAAClABoAAAAAAAIAAACmABoAAAABAAIAAACnABoAAAACAAIAAACoABoAAAAAAAIAAACpABoAAAABAAIAAACqABoAAAACAAIAAACrABoAAAAAAAIAAACsABoAAAABAAIAAACtABoAAAACAAIAAACrABsAAAABAAIAAACsABsAAAACAAIAAACtABsAAAACAAIAAACuABsAAAAAAAIAAACvABsAAAABAAIAAACuABoAAAAAAAIAAACvABoAAAABAAIAAACrABwAAAABAAIAAACsABwAAAACAAIAAACtABwAAAAAAAIAAACuABwAAAABAAIAAACvABwAAAACAAIAAACqABwAAAAAAAIAAACqABsAAAAAAAIAAACnABsAAAAAAAIAAACoABsAAAABAAIAAACpABsAAAACAAIAAACkABsAAAAAAAIAAAClABsAAAABAAIAAACmABsAAAACAAIAAACnABwAAAAAAAIAAACoABwAAAABAAIAAACpABwAAAACAAIAAACkABwAAAAAAAIAAAClABwAAAABAAIAAACmABwAAAACAAIAAAChABsAAAAAAAIAAACiABsAAAABAAIAAACjABsAAAACAAIAAACeABsAAAAAAAIAAACfABsAAAABAAIAAACgABsAAAACAAIAAACeABwAAAAAAAIAAACfABwAAAABAAIAAACgABwAAAACAAIAAACbABwAAAAAAAIAAACcABwAAAABAAIAAACdABwAAAACAAIAAACbABsAAAAAAAIAAACcABsAAAABAAIAAACdABsAAAACAAIAAACYABsAAAAAAAIAAACZABsAAAABAAIAAACaABsAAAACAAIAAACVABsAAAACAAIAAACWABsAAAABAAIAAACXABsAAAACAAIAAACYABwAAAAAAAIAAACZABwAAAABAAIAAACaABwAAAACAAIAAAChABwAAAAAAAIAAACiABwAAAABAAIAAACjABwAAAACAAIAAACgABoAAAAAAAIAAAChABoAAAABAAIAAACdABoAAAAAAAIAAACeABoAAAABAAIAAACfABoAAAACAAIAAACaABoAAAAAAAIAAACbABoAAAABAAIAAACcABoAAAACAAIAAACXABoAAAAAAAIAAACYABoAAAABAAIAAACZABoAAAACAAIAAACUABoAAAAAAAIAAACVABoAAAABAAIAAACWABoAAAACAAIAAACRABoAAAABAAIAAACSABoAAAACAAIAAACTABoAAAACAAIAAABoABoAAAACAAIAAABpABoAAAAAAAIAAABqABoAAAABAAIAAABrABoAAAACAAIAAABsABoAAAAAAAIAAABtABoAAAABAAIAAABuABoAAAACAAIAAABpABsAAAAAAAIAAABqABsAAAABAAIAAABrABsAAAACAAIAAABoABsAAAACAAIAAABoABwAAAACAAIAAABpABwAAAAAAAIAAABqABwAAAABAAIAAABrABwAAAACAAIAAABsABsAAAAAAAIAAABtABsAAAABAAIAAABuABsAAAACAAIAAABsABwAAAAAAAIAAABtABwAAAABAAIAAABuABwAAAACAAIAAABvABwAAAAAAAIAAABwABwAAAABAAIAAABxABwAAAACAAIAAABvABsAAAAAAAIAAABwABsAAAABAAIAAABxABsAAAACAAIAAABvABoAAAAAAAIAAABwABoAAAABAAIAAABxABoAAAACAAIAAAByABsAAAAAAAIAAABzABsAAAABAAIAAAB0ABsAAAACAAIAAAByABwAAAAAAAIAAABzABwAAAABAAIAAAB0ABwAAAACAAIAAAB1ABwAAAAAAAIAAAB2ABwAAAABAAIAAAB3ABwAAAACAAIAAAB4ABwAAAAAAAIAAAB5ABwAAAABAAIAAAB6ABwAAAACAAIAAAB7ABwAAAAAAAIAAAB8ABwAAAABAAIAAAB9ABwAAAACAAIAAAB+ABwAAAAAAAIAAAB/ABwAAAABAAIAAACAABwAAAAAAAIAAACVABwAAAAAAAIAAACWABwAAAABAAIAAACXABwAAAACAAIAAACSABwAAAAAAAIAAACTABwAAAABAAIAAACUABwAAAACAAIAAACPABwAAAAAAAIAAACQABwAAAABAAIAAACRABwAAAACAAIAAACMABwAAAAAAAIAAACNABwAAAABAAIAAACOABwAAAACAAIAAACJABwAAAACAAIAAACKABwAAAABAAIAAACLABwAAAACAAIAAACGABwAAAACAAIAAACHABwAAAAAAAIAAACIABwAAAABAAIAAACBABwAAAAAAAIAAACCABwAAAABAAIAAACEABwAAAAAAAIAAACFABwAAAABAAIAAACDABwAAAACAAIAAACHABsAAAAAAAIAAACIABsAAAABAAIAAACJABsAAAACAAIAAACKABsAAAAAAAIAAACLABsAAAABAAIAAACMABsAAAACAAIAAACNABsAAAAAAAIAAACOABsAAAABAAIAAACPABsAAAACAAIAAACQABsAAAAAAAIAAACRABsAAAABAAIAAACSABsAAAACAAIAAACTABsAAAAAAAIAAACUABsAAAABAAIAAACQABoAAAAAAAIAAACNABoAAAAAAAIAAACOABoAAAABAAIAAACPABoAAAACAAIAAACKABoAAAAAAAIAAACLABoAAAABAAIAAACMABoAAAACAAIAAACHABoAAAAAAAIAAACIABoAAAABAAIAAACJABoAAAACAAIAAACEABoAAAAAAAIAAACFABoAAAABAAIAAACGABoAAAACAAIAAACBABoAAAAAAAIAAACCABoAAAABAAIAAACDABoAAAACAAIAAACBABsAAAAAAAIAAACCABsAAAABAAIAAACDABsAAAACAAIAAACEABsAAAAAAAIAAACFABsAAAABAAIAAACGABsAAAACAAIAAAB+ABsAAAAAAAIAAAB/ABsAAAABAAIAAACAABsAAAACAAIAAAB7ABsAAAAAAAIAAAB8ABsAAAABAAIAAAB9ABsAAAACAAIAAAB4ABsAAAAAAAIAAAB5ABsAAAABAAIAAAB6ABsAAAACAAIAAAB1ABsAAAAAAAIAAAB2ABsAAAABAAIAAAB3ABsAAAACAAIAAAByABoAAAAAAAIAAABzABoAAAABAAIAAAB0ABoAAAACAAIAAAB1ABoAAAAAAAIAAAB2ABoAAAABAAIAAAB3ABoAAAACAAIAAAB4ABoAAAAAAAIAAAB5ABoAAAABAAIAAAB6ABoAAAACAAIAAAB7ABoAAAAAAAIAAAB8ABoAAAABAAIAAAB9ABoAAAACAAIAAAB+ABoAAAAAAAIAAAB/ABoAAAABAAIAAACAABoAAAACAAIAAAA=")
 tile_set = ExtResource("1_857qy")
 
+[node name="MockupPlatforms" type="Node2D" parent="." unique_id=275421789]
+
+[node name="Solids" type="StaticBody2D" parent="MockupPlatforms" unique_id=839244184]
+collision_mask = 0
+
+[node name="Platform1" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=1578680487]
+position = Vector2(668, 311.9)
+shape = SubResource("MockShape_Platform1")
+one_way_collision = true
+
+[node name="Platform2" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=253636562]
+position = Vector2(952.4, 371.1)
+shape = SubResource("MockShape_Platform2")
+one_way_collision = true
+
+[node name="Platform3" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=189803628]
+position = Vector2(1652.6, 430.6)
+shape = SubResource("MockShape_Platform3")
+one_way_collision = true
+
+[node name="Platform4" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=1508835123]
+position = Vector2(2370.8, 518)
+shape = SubResource("MockShape_Platform4")
+one_way_collision = true
+
+[node name="Platform5" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=1759756518]
+position = Vector2(1249.4, 618.2)
+shape = SubResource("MockShape_Platform5")
+one_way_collision = true
+
+[node name="Platform6" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=173947723]
+position = Vector2(1758.8, 601.3)
+shape = SubResource("MockShape_Platform6")
+one_way_collision = true
+
+[node name="Platform7" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=179273412]
+position = Vector2(2579.6, 660.3)
+shape = SubResource("MockShape_Platform7")
+one_way_collision = true
+
+[node name="Platform8" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=207708116]
+position = Vector2(653.6, 701.1)
+shape = SubResource("MockShape_Platform8")
+one_way_collision = true
+
+[node name="Platform9" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=1002412960]
+position = Vector2(2086.4, 710.2)
+shape = SubResource("MockShape_Platform9")
+one_way_collision = true
+
+[node name="Platform10" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=431626740]
+position = Vector2(1206.2, 755.7)
+shape = SubResource("MockShape_Platform10")
+one_way_collision = true
+
+[node name="Platform11" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=429662544]
+position = Vector2(2549, 768.7)
+shape = SubResource("MockShape_Platform11")
+one_way_collision = true
+
+[node name="FloorExtension" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=1241330561]
+position = Vector2(3007, 830)
+shape = SubResource("MockShape_FloorExtension")
+
+[node name="BarrierLeft" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=1686354968]
+position = Vector2(-20, 430)
+shape = SubResource("MockShape_BarrierLeft")
+
+[node name="BarrierRight" type="CollisionShape2D" parent="MockupPlatforms/Solids" unique_id=1849020715]
+position = Vector2(3220, 430)
+shape = SubResource("MockShape_BarrierRight")
+
+[node name="Art" type="Node2D" parent="MockupPlatforms" unique_id=1769900853]
+
+[node name="Platform1" type="TextureRect" parent="MockupPlatforms/Art" unique_id=306895024]
+texture_filter = 1
+offset_left = 405.2
+offset_top = 300.5
+offset_right = 930.8
+offset_bottom = 316.5
+mouse_filter = 2
+texture = SubResource("MockAtlas_platform")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Platform2" type="TextureRect" parent="MockupPlatforms/Art" unique_id=1374299407]
+texture_filter = 1
+offset_left = 826.4
+offset_top = 361.5
+offset_right = 1078.4
+offset_bottom = 377.5
+mouse_filter = 2
+texture = SubResource("MockAtlas_platform")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Platform3" type="TextureRect" parent="MockupPlatforms/Art" unique_id=934962993]
+texture_filter = 1
+offset_left = 981.2
+offset_top = 418.6
+offset_right = 2324.0
+offset_bottom = 434.6
+mouse_filter = 2
+texture = SubResource("MockAtlas_platform")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Platform4" type="TextureRect" parent="MockupPlatforms/Art" unique_id=1822783130]
+texture_filter = 1
+offset_left = 1938.8
+offset_top = 506.0
+offset_right = 2802.8
+offset_bottom = 522.0
+mouse_filter = 2
+texture = SubResource("MockAtlas_platform")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Platform5" type="TextureRect" parent="MockupPlatforms/Art" unique_id=1939187237]
+texture_filter = 1
+offset_left = 963.2
+offset_top = 607.4
+offset_right = 1535.6
+offset_bottom = 623.4
+mouse_filter = 2
+texture = SubResource("MockAtlas_platform")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Platform6" type="TextureRect" parent="MockupPlatforms/Art" unique_id=1555333613]
+texture_filter = 1
+offset_left = 1632.8
+offset_top = 592.0
+offset_right = 1884.8
+offset_bottom = 608.0
+mouse_filter = 2
+texture = SubResource("MockAtlas_platform")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Platform7" type="TextureRect" parent="MockupPlatforms/Art" unique_id=832798464]
+texture_filter = 1
+offset_left = 2450.0
+offset_top = 651.9
+offset_right = 2709.2
+offset_bottom = 667.9
+mouse_filter = 2
+texture = SubResource("MockAtlas_platform")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Platform8" type="TextureRect" parent="MockupPlatforms/Art" unique_id=2121521527]
+texture_filter = 1
+offset_left = 390.8
+offset_top = 689.7
+offset_right = 916.4
+offset_bottom = 705.7
+mouse_filter = 2
+texture = SubResource("MockAtlas_platform")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Platform9" type="TextureRect" parent="MockupPlatforms/Art" unique_id=296293295]
+texture_filter = 1
+offset_left = 1859.6
+offset_top = 700.0
+offset_right = 2313.2
+offset_bottom = 716.0
+mouse_filter = 2
+texture = SubResource("MockAtlas_platform")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Platform10" type="TextureRect" parent="MockupPlatforms/Art" unique_id=587465656]
+texture_filter = 1
+offset_left = 1028.0
+offset_top = 744.3
+offset_right = 1384.4
+offset_bottom = 760.3
+mouse_filter = 2
+texture = SubResource("MockAtlas_platform")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Platform11" type="TextureRect" parent="MockupPlatforms/Art" unique_id=1993958191]
+texture_filter = 1
+offset_left = 2295.2
+offset_top = 759.1
+offset_right = 2802.8
+offset_bottom = 775.1
+mouse_filter = 2
+texture = SubResource("MockAtlas_platform")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="FloorExtension" type="TextureRect" parent="MockupPlatforms/Art" unique_id=631561009]
+texture_filter = 1
+offset_left = 2814.0
+offset_top = 800.0
+offset_right = 3200.0
+offset_bottom = 912.0
+mouse_filter = 2
+texture = SubResource("MockAtlas_ground")
+
+[node name="DebugVisuals" type="Node2D" parent="MockupPlatforms" unique_id=2133088505]
+visible = false
+
+[node name="Platform1" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=791476599]
+offset_left = 405.2
+offset_top = 300.5
+offset_right = 930.8
+offset_bottom = 323.3
+mouse_filter = 2
+color = Color(0.3, 0.8, 1, 0.45)
+
+[node name="Platform2" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=575395645]
+offset_left = 826.4
+offset_top = 361.5
+offset_right = 1078.4
+offset_bottom = 380.7
+mouse_filter = 2
+color = Color(0.3, 0.8, 1, 0.45)
+
+[node name="Platform3" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=1789299421]
+offset_left = 981.2
+offset_top = 418.6
+offset_right = 2324.0
+offset_bottom = 442.6
+mouse_filter = 2
+color = Color(0.3, 0.8, 1, 0.45)
+
+[node name="Platform4" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=927111966]
+offset_left = 1938.8
+offset_top = 506.0
+offset_right = 2802.8
+offset_bottom = 530.0
+mouse_filter = 2
+color = Color(0.3, 0.8, 1, 0.45)
+
+[node name="Platform5" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=818500519]
+offset_left = 963.2
+offset_top = 607.4
+offset_right = 1535.6
+offset_bottom = 629.0
+mouse_filter = 2
+color = Color(0.3, 0.8, 1, 0.45)
+
+[node name="Platform6" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=769698968]
+offset_left = 1632.8
+offset_top = 592.0
+offset_right = 1884.8
+offset_bottom = 610.6
+mouse_filter = 2
+color = Color(0.3, 0.8, 1, 0.45)
+
+[node name="Platform7" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=1841266631]
+offset_left = 2450.0
+offset_top = 651.9
+offset_right = 2709.2
+offset_bottom = 668.7
+mouse_filter = 2
+color = Color(0.3, 0.8, 1, 0.45)
+
+[node name="Platform8" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=1626012195]
+offset_left = 390.8
+offset_top = 689.7
+offset_right = 916.4
+offset_bottom = 712.5
+mouse_filter = 2
+color = Color(0.3, 0.8, 1, 0.45)
+
+[node name="Platform9" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=386129221]
+offset_left = 1859.6
+offset_top = 700.0
+offset_right = 2313.2
+offset_bottom = 720.4
+mouse_filter = 2
+color = Color(0.3, 0.8, 1, 0.45)
+
+[node name="Platform10" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=132293763]
+offset_left = 1028.0
+offset_top = 744.3
+offset_right = 1384.4
+offset_bottom = 767.1
+mouse_filter = 2
+color = Color(0.3, 0.8, 1, 0.45)
+
+[node name="Platform11" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=2135377036]
+offset_left = 2295.2
+offset_top = 759.1
+offset_right = 2802.8
+offset_bottom = 778.3
+mouse_filter = 2
+color = Color(0.3, 0.8, 1, 0.45)
+
+[node name="FloorExtension" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=1402318994]
+offset_left = 2814.0
+offset_top = 800.0
+offset_right = 3200.0
+offset_bottom = 860.0
+mouse_filter = 2
+color = Color(0.3, 1, 0.4, 0.45)
+
+[node name="BarrierLeft" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=1923101353]
+offset_left = -40.0
+offset_bottom = 860.0
+mouse_filter = 2
+color = Color(1, 0.2, 0.2, 0.35)
+
+[node name="BarrierRight" type="ColorRect" parent="MockupPlatforms/DebugVisuals" unique_id=1064809863]
+offset_left = 3200.0
+offset_right = 3240.0
+offset_bottom = 860.0
+mouse_filter = 2
+color = Color(1, 0.2, 0.2, 0.35)
+
+[node name="DoorToArea2" parent="." unique_id=1293336389 instance=ExtResource("mock_door")]
+position = Vector2(470, 300)
+
 [node name="Player" parent="." unique_id=277019869 instance=ExtResource("2_67mqo")]
 position = Vector2(100, 300)
+jump_velocity = -560.0
 
 [node name="MagicalBook" parent="." unique_id=221629619 node_paths=PackedStringArray("player") instance=ExtResource("3_4opvy")]
-position = Vector2(1658, 779)
+position = Vector2(1650, 385)
 player = NodePath("../Player")
 
 [node name="MagicalBook2" parent="." unique_id=2138683380 node_paths=PackedStringArray("player") instance=ExtResource("3_4opvy")]
-position = Vector2(400, 300)
+position = Vector2(1250, 575)
 player = NodePath("../Player")
 
 [node name="BookKeeper" parent="." unique_id=602755473 node_paths=PackedStringArray("player") instance=ExtResource("4_qw5yn")]
-position = Vector2(883, 671)
+position = Vector2(900, 770)
+speed = 70.0
 chase_speed = 200.0
+patrol_distance = 280.0
 player = NodePath("../Player")
 
 [node name="BookKeeper2" parent="." unique_id=858774639 node_paths=PackedStringArray("player") instance=ExtResource("4_qw5yn")]
-position = Vector2(2108, 639)
+position = Vector2(1560, 770)
+speed = 70.0
 chase_speed = 200.0
+patrol_distance = 280.0
 player = NodePath("../Player")
 
 [node name="BookKeeper3" parent="." unique_id=145881407 node_paths=PackedStringArray("player") instance=ExtResource("4_qw5yn")]
-position = Vector2(2492, 771)
+position = Vector2(2150, 770)
+speed = 70.0
 chase_speed = 200.0
+patrol_distance = 280.0
 player = NodePath("../Player")
 
 [node name="Platform" type="StaticBody2D" parent="." unique_id=1788256931]
@@ -8075,59 +8451,13 @@ one_way_collision = true
 tile_map_data = PackedByteArray("AAAtAC4AAQABAAIAAAAuAC4AAQABAAIAAAAvAC4AAQABAAIAAAAwAC4AAQABAAIAAAAxAC4AAQABAAIAAAAyAC4AAQABAAIAAAAzAC4AAQABAAIAAAA0AC4AAQABAAIAAAA1AC4AAQABAAIAAAA2AC4AAQABAAIAAAA3AC4AAQABAAIAAAA4AC4AAQABAAIAAAA5AC4AAQABAAIAAAA6AC4AAQABAAIAAAA7AC4AAQABAAIAAAA=")
 tile_set = ExtResource("1_857qy")
 
-[node name="Platform2" type="StaticBody2D" parent="." unique_id=35752631]
-position = Vector2(919, -54)
+[node name="MagicalBook3" parent="." unique_id=812793854 node_paths=PackedStringArray("player") instance=ExtResource("3_4opvy")]
+position = Vector2(2370, 470)
+player = NodePath("../Player")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2" unique_id=1762687157]
-position = Vector2(840.5, 743.5)
-shape = SubResource("RectangleShape2D_xrivr")
-one_way_collision = true
-
-[node name="TileMapLayer" type="TileMapLayer" parent="Platform2" unique_id=1156592626]
-tile_map_data = PackedByteArray("AAAtAC4AAQABAAIAAAAuAC4AAQABAAIAAAAvAC4AAQABAAIAAAAwAC4AAQABAAIAAAAxAC4AAQABAAIAAAAyAC4AAQABAAIAAAAzAC4AAQABAAIAAAA0AC4AAQABAAIAAAA1AC4AAQABAAIAAAA2AC4AAQABAAIAAAA3AC4AAQABAAIAAAA4AC4AAQABAAIAAAA5AC4AAQABAAIAAAA6AC4AAQABAAIAAAA7AC4AAQABAAIAAAA=")
-tile_set = ExtResource("1_857qy")
-
-[node name="Platform3" type="StaticBody2D" parent="." unique_id=786991160]
-position = Vector2(1159, -54)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3" unique_id=688018654]
-position = Vector2(840.5, 743.5)
-shape = SubResource("RectangleShape2D_xrivr")
-one_way_collision = true
-
-[node name="TileMapLayer" type="TileMapLayer" parent="Platform3" unique_id=1722823501]
-tile_map_data = PackedByteArray("AAAtAC4AAQABAAIAAAAuAC4AAQABAAIAAAAvAC4AAQABAAIAAAAwAC4AAQABAAIAAAAxAC4AAQABAAIAAAAyAC4AAQABAAIAAAAzAC4AAQABAAIAAAA0AC4AAQABAAIAAAA1AC4AAQABAAIAAAA2AC4AAQABAAIAAAA3AC4AAQABAAIAAAA4AC4AAQABAAIAAAA5AC4AAQABAAIAAAA6AC4AAQABAAIAAAA7AC4AAQABAAIAAAA=")
-tile_set = ExtResource("1_857qy")
-
-[node name="Platform4" type="StaticBody2D" parent="." unique_id=63161506]
-position = Vector2(1399, -54)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform4" unique_id=1421000226]
-position = Vector2(840.5, 743.5)
-shape = SubResource("RectangleShape2D_xrivr")
-one_way_collision = true
-
-[node name="TileMapLayer" type="TileMapLayer" parent="Platform4" unique_id=1769305621]
-tile_map_data = PackedByteArray("AAAtAC4AAQABAAIAAAAuAC4AAQABAAIAAAAvAC4AAQABAAIAAAAwAC4AAQABAAIAAAAxAC4AAQABAAIAAAAyAC4AAQABAAIAAAAzAC4AAQABAAIAAAA0AC4AAQABAAIAAAA1AC4AAQABAAIAAAA2AC4AAQABAAIAAAA3AC4AAQABAAIAAAA4AC4AAQABAAIAAAA5AC4AAQABAAIAAAA6AC4AAQABAAIAAAA7AC4AAQABAAIAAAA=")
-tile_set = ExtResource("1_857qy")
-
-[node name="Stairs" type="StaticBody2D" parent="." unique_id=347703361]
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Stairs" unique_id=13886509]
-position = Vector2(1654, 790)
-polygon = PackedVector2Array(-135, 7, -135, -19, -114, -19, -114, -43, -95, -43, -95, -64, -75, -64, -75, -85, -54, -85, -54, -111, -14, -110, -14, 10, -134, 10)
-
-[node name="TileMapLayer" type="TileMapLayer" parent="Stairs" unique_id=1096819145]
-scale = Vector2(2.5, 2.5)
-tile_map_data = PackedByteArray("AABjADAAAwAAAAEAAABjADEAAwAAAAIAAABkAC8AAwABAAAAAABkADAAAwABAAEAAABkADEAAwABAAIAAABlAC8AAwACAAAAAABlADAAAwACAAEAAABlADEAAwACAAIAAABmADAAAwACAAEAAABmADEAAwACAAIAAABmAC8AAwACAAIAAABnAC4AAwACAAEAAABnAC8AAwACAAIAAABnADAAAwACAAEAAABnADEAAwACAAIAAABmAC4AAwABAAEAAAAmABIAAwAAAAEAAAAmABMAAwAAAAIAAAAnABEAAwABAAAAAAAnABIAAwABAAEAAAAnABMAAwABAAIAAAAoABEAAwACAAAAAAAoABIAAwACAAEAAAAoABMAAwACAAIAAAA=")
-tile_set = ExtResource("1_857qy")
-
-[node name="Wall" type="StaticBody2D" parent="." unique_id=78123225]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall" unique_id=1496005493]
-position = Vector2(533, 759)
-shape = SubResource("RectangleShape2D_13qdw")
-
-[node name="TileMapLayer" type="TileMapLayer" parent="Wall" unique_id=313957376]
-tile_map_data = PackedByteArray("AAAhAC8ABAACAAIAAAAhADAABAACAAEAAAAhADEABAACAAIAAAAhAC0ABAACAAAAAAAhAC4ABAACAAEAAAA=")
-tile_set = ExtResource("1_857qy")
+[node name="BookKeeper4" parent="." unique_id=235058432 node_paths=PackedStringArray("player") instance=ExtResource("4_qw5yn")]
+position = Vector2(2950, 770)
+speed = 70.0
+chase_speed = 200.0
+patrol_distance = 200.0
+player = NodePath("../Player")

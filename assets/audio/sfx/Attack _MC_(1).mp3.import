@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://d2dq6lkfs1tql"
+path="res://.godot/imported/Attack _MC_(1).mp3-8484a9c4ffdeaf13851f9e4870753d57.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/sfx/Attack _MC_(1).mp3"
+dest_files=["res://.godot/imported/Attack _MC_(1).mp3-8484a9c4ffdeaf13851f9e4870753d57.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
