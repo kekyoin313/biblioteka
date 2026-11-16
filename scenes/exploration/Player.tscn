@@ -16,6 +16,7 @@ shape = SubResource("RectangleShape2D_pq8s5")
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1220066715]
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=148456181]
+zoom = Vector2(2.645, 2.645)
 position_smoothing_enabled = true
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1195647984]

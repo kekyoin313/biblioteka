@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://c508ib1pgdaeb"]
+
+[ext_resource type="Texture2D" uid="uid://2v3w5xbh71it" path="res://assets/Background/Background 3.png" id="1_n0h5j"]
+[ext_resource type="Texture2D" uid="uid://c5xy6agc7aeyb" path="res://assets/Background/Midground 3.png" id="2_gb2n5"]
+[ext_resource type="Texture2D" uid="uid://cmha3fh007ds2" path="res://assets/tilesets/tile 5 stage 3.png" id="3_spnph"]
+[ext_resource type="PackedScene" uid="uid://uff3dx5t64ge" path="res://scenes/exploration/Enemies/final_boss.tscn" id="4_x6ctj"]
+[ext_resource type="PackedScene" uid="uid://de5yyvva5orfg" path="res://scenes/exploration/Player.tscn" id="12_kmv8x"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xrivr"]
+size = Vector2(1544, 67)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_13qdw"]
+size = Vector2(20, 805.5)
+
+[node name="Level" type="Node2D" unique_id=90229433]
+
+[node name="Background" type="Sprite2D" parent="." unique_id=1183857753]
+position = Vector2(765.1025, 404.125)
+scale = Vector2(0.3146246, 0.29538825)
+texture = ExtResource("1_n0h5j")
+metadata/_edit_lock_ = true
+
+[node name="Midground" type="Sprite2D" parent="." unique_id=1774562653]
+position = Vector2(762.1106, 374)
+scale = Vector2(0.31197968, 0.31197974)
+texture = ExtResource("2_gb2n5")
+metadata/_edit_lock_ = true
+
+[node name="Ground" type="StaticBody2D" parent="." unique_id=1907990142]
+position = Vector2(0, 400)
+
+[node name="Sprite2D" type="Sprite2D" parent="Ground" unique_id=1904096624]
+position = Vector2(763, 416)
+scale = Vector2(2.0394218, 1.4368786)
+texture = ExtResource("3_spnph")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=873328008]
+visible = false
+position = Vector2(761, 428.5)
+shape = SubResource("RectangleShape2D_xrivr")
+
+[node name="Barrier Kiri" type="StaticBody2D" parent="." unique_id=1816326807]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrier Kiri" unique_id=287494576]
+position = Vector2(0, 392.5)
+shape = SubResource("RectangleShape2D_13qdw")
+
+[node name="Barrier Kanan" type="StaticBody2D" parent="." unique_id=1277422712]
+visible = false
+position = Vector2(1548, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrier Kanan" unique_id=721592007]
+position = Vector2(-20, 400.25)
+shape = SubResource("RectangleShape2D_13qdw")
+
+[node name="final_boss" parent="." unique_id=221629619 instance=ExtResource("4_x6ctj")]
+position = Vector2(988, 627)
+scale = Vector2(10, 9.624)
+
+[node name="Player" parent="." unique_id=277019869 instance=ExtResource("12_kmv8x")]
+position = Vector2(46, 773)
+jump_velocity = -560.0
