@@ -6,9 +6,6 @@ extends Control
 
 func _ready() -> void:
 	load_btn.disabled = not FileAccess.file_exists("user://biblioteka_save.json")
-	AudioManager.play_bgm(
-    "res://assets/audio/bgm/background_audio.mp3"
-)
 
 func _on_adventure_pressed() -> void:
 	GameManager.reset_game()

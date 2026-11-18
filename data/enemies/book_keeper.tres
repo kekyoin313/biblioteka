@@ -1,10 +1,14 @@
 [gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://b45th7k3r0krt"]
 
 [ext_resource type="Script" uid="uid://bnoyo1k3lsvd2" path="res://data/enemies/enemy_data.gd" id="1_4dxoa"]
+[ext_resource type="Texture2D" uid="uid://bngjgs72l1u0e" path="res://assets/sprites/Enemy/p_book.png" id="1_400cw"]
+[ext_resource type="Texture2D" uid="uid://48sinwc3oii3" path="res://assets/sprites/Enemy/p_book_hurt.png" id="2_iywwc"]
 
 [resource]
 script = ExtResource("1_4dxoa")
 enemy_name = "Book Keeper"
 max_hp = 60
 attack_pattern = Array[int]([5, 5, 7])
+battle_sprite = ExtResource("1_400cw")
+hurt_sprite = ExtResource("2_iywwc")
 metadata/_custom_type_script = "uid://bnoyo1k3lsvd2"

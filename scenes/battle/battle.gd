@@ -4,6 +4,7 @@ const CARD_SCENE = preload("res://scenes/battle/Card.tscn")
 const UPGRADE_BOOK = preload("res://scenes/ui/upgrade_book.gd")
 const SHIELD_BAR_MAX: float = 30.0
 const PLAYER_HURT: Texture2D = preload("res://assets/sprites/Player/Player_mata tertutup.png")
+const SFX_CHANGE_TURN: String = "res://assets/audio/bgm/Change_Turn.wav"
 
 @onready var enemy_intent_label: Label = $EnemyArea/EnemyIntentLabel
 @onready var enemy_name_label: Label = $EnemyArea/EnemyName
@@ -35,15 +36,15 @@ const EYES_CLOSED: Texture2D = preload(
     "res://assets/sprites/Player/Player_mata tertutup.png"
 )
 const ATTACK_CARD_TEXTURE: Texture2D = preload(
-	"res://assets/sprites/Cards/Attack.png"
+	"res://assets/sprites/Cards/Defens.png"
 )
 
 const DEFENSE_CARD_TEXTURE: Texture2D = preload(
-	"res://assets/sprites/Cards/Defense.png"
+	"res://assets/sprites/Cards/Attac.png"
 )
 
 const EVADE_CARD_TEXTURE: Texture2D = preload(
-	"res://assets/sprites/Cards/Evade.png"
+	"res://assets/sprites/Cards/Evad.png"
 )
 
 func _ready() -> void:
@@ -244,6 +245,8 @@ func _on_shield_updated(player_block: int, enemy_block: int) -> void:
 	last_enemy_shield = enemy_block
 
 func _on_turn_changed(turn_owner: String) -> void:
+	AudioManager.play_sfx(SFX_CHANGE_TURN) 
+	
 	if turn_owner == "player":
 		turn_label.text = "Giliranmu"
 		for child in hand_container.get_children():

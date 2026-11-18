@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://c2n5ccha2qq4t"
-path="res://.godot/imported/Defence_Up_Mc.mp3-8681bc33932053a307714ba55f035b84.mp3str"
+path="res://.godot/imported/defence_up_mc.mp3-a23937a23475f313f8fbce8e0976d734.mp3str"
 
 [deps]
 
-source_file="res://assets/audio/sfx/Defence_Up_Mc.mp3"
-dest_files=["res://.godot/imported/Defence_Up_Mc.mp3-8681bc33932053a307714ba55f035b84.mp3str"]
+source_file="res://assets/audio/sfx/defence_up_mc.mp3"
+dest_files=["res://.godot/imported/defence_up_mc.mp3-a23937a23475f313f8fbce8e0976d734.mp3str"]
 
 [params]
 
