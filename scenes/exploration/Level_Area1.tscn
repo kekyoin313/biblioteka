@@ -20,6 +20,7 @@ size = Vector2(1544, 67)
 size = Vector2(20, 805.5)
 
 [node name="Level" type="Node2D" unique_id=90229433]
+script = ExtResource("1_4kw54")
 
 [node name="Background" type="Sprite2D" parent="." unique_id=1183857753]
 position = Vector2(765.1025, 404.125)

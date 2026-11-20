@@ -1,9 +1,10 @@
 [gd_scene format=3 uid="uid://de5yyvva5orfg"]
 
 [ext_resource type="Script" uid="uid://cfo2rjtdglcyc" path="res://scenes/exploration/player.gd" id="1_7dllg"]
+[ext_resource type="SpriteFrames" uid="uid://bh6momn43n4kk" path="res://assets/sprites/Budi/player_walk_frames.tres" id="2_6rcey"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pq8s5"]
-size = Vector2(24, 32)
+size = Vector2(23, 92)
 
 [node name="Player" type="CharacterBody2D" unique_id=1058505691]
 collision_layer = 2
@@ -11,17 +12,17 @@ collision_mask = 5
 script = ExtResource("1_7dllg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1191984105]
+position = Vector2(1.5, 3)
 shape = SubResource("RectangleShape2D_pq8s5")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1220066715]
+[node name="AnimationPlayer" type="AnimatedSprite2D" parent="." unique_id=2081285806]
+texture_filter = 1
+position = Vector2(3, 2)
+scale = Vector2(0.4140625, 0.4140625)
+sprite_frames = ExtResource("2_6rcey")
+animation = &"jump"
+frame_progress = 0.62620497
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=148456181]
 zoom = Vector2(2.645, 2.645)
 position_smoothing_enabled = true
-
-[node name="ColorRect" type="ColorRect" parent="." unique_id=1195647984]
-custom_minimum_size = Vector2(24, 32)
-offset_left = -12.0
-offset_top = -16.0
-offset_right = 12.0
-offset_bottom = 16.0

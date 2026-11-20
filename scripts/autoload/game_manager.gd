@@ -27,12 +27,14 @@ var saved_area_scene: String = ""
 var current_enemy_data: Resource = null
 
 func reset_game() -> void:
+	print("[DEBUG] GameManager: Reset Game Dipanggil!") 
 	player_hp = player_max_hp
 	player_base_damage = START_BASE_DAMAGE
 	current_area = "area_1_lobby"
 	defeated_bosses.clear()
 	opened_chests.clear()
 	unlocked_doors.clear()
+	defeated_enemies.clear()
 	
 func set_hp(value: int) -> void:
 	player_hp = clamp(value, 0, player_max_hp)
@@ -61,7 +63,8 @@ func start_battle(
 	battle_in_progress = true
 	current_enemy_data = enemy_data
 	current_enemy_id = enemy_id
-
+	
+	
 	var player := get_tree().get_first_node_in_group("player") as Node2D
 
 	if player != null:
@@ -76,6 +79,7 @@ func start_battle(
 	call_deferred("_go_to_battle")
 	
 func end_battle(result: String) -> void:
+	AudioManager.play_bgm("res://assets/audio/bgm/background_audio.mp3") 
 	battle_ended.emit(result)
 
 	if result == "win":
