@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://bfmfue8vfv5kg"
-path="res://.godot/imported/attack_enemy.mp3-4a9ef226ed3b620583878e0e56fb616c.mp3str"
+path="res://.godot/imported/Attack_Enemy.mp3-fbe06298b4eee8b7f5a6cac8b99e7939.mp3str"
 
 [deps]
 
-source_file="res://assets/audio/sfx/attack_enemy.mp3"
-dest_files=["res://.godot/imported/attack_enemy.mp3-4a9ef226ed3b620583878e0e56fb616c.mp3str"]
+source_file="res://assets/audio/sfx/Attack_Enemy.mp3"
+dest_files=["res://.godot/imported/Attack_Enemy.mp3-fbe06298b4eee8b7f5a6cac8b99e7939.mp3str"]
 
 [params]
 

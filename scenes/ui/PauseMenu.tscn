@@ -63,6 +63,10 @@ horizontal_alignment = 1
 layout_mode = 2
 text = "Lanjutkan"
 
+[node name="Settings" type="Button" parent="Root/Center/Panel/Margin/VBox" unique_id=1627415859]
+layout_mode = 2
+text = "Settings"
+
 [node name="MenuBtn" type="Button" parent="Root/Center/Panel/Margin/VBox" unique_id=2143754423]
 layout_mode = 2
 text = "Menu Utama"

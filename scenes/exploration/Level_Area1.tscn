@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://ckkv85ho3223s"]
 
+[ext_resource type="Script" uid="uid://bdpdufdcjynp3" path="res://scenes/exploration/level_area1.gd" id="1_4kw54"]
 [ext_resource type="Texture2D" uid="uid://kvjtjgsloqid" path="res://assets/Background/Background.png" id="1_ghnp5"]
 [ext_resource type="Texture2D" uid="uid://c7euebtitfvi4" path="res://assets/Background/Midground 1.png" id="2_4kw54"]
 [ext_resource type="PackedScene" uid="uid://de5yyvva5orfg" path="res://scenes/exploration/Player.tscn" id="2_67mqo"]
@@ -199,7 +200,7 @@ position = Vector2(636, 581)
 player = NodePath("../Player")
 
 [node name="BookKeeper" parent="." unique_id=602755473 node_paths=PackedStringArray("player") instance=ExtResource("4_qw5yn")]
-position = Vector2(186.00003, 765)
+position = Vector2(605, 767)
 scale = Vector2(1.1366582, 1.2478061)
 speed = 70.0
 chase_speed = 200.0
