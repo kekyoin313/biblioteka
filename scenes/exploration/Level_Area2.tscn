@@ -235,12 +235,11 @@ polygon = PackedVector2Array(-444.08203, -16.246826, -536.14746, -16.246826, -54
 
 [node name="ExitDoor" parent="." unique_id=172347043 instance=ExtResource("8_door")]
 position = Vector2(3100, 230)
-target_scene = ""
+target_scene = "uid://c508ib1pgdaeb"
 prompt_text = "[E] Lanjut"
 
 [node name="Player" parent="." unique_id=1029444179 instance=ExtResource("6_ply")]
-position = Vector2(38, 832)
-jump_velocity = -560.0
+position = Vector2(57, 808)
 
 [node name="BookKeeper" parent="." unique_id=81513943 node_paths=PackedStringArray("player") instance=ExtResource("7_bk")]
 position = Vector2(888, 807)

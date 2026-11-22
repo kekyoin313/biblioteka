@@ -4,15 +4,16 @@
 [ext_resource type="SpriteFrames" uid="uid://bh6momn43n4kk" path="res://assets/sprites/Budi/player_walk_frames.tres" id="2_6rcey"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pq8s5"]
-size = Vector2(23, 92)
+size = Vector2(23, 69)
 
 [node name="Player" type="CharacterBody2D" unique_id=1058505691]
 collision_layer = 2
 collision_mask = 5
 script = ExtResource("1_7dllg")
+jump_velocity = -530.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1191984105]
-position = Vector2(1.5, 3)
+position = Vector2(1.5, 9.5)
 shape = SubResource("RectangleShape2D_pq8s5")
 
 [node name="AnimationPlayer" type="AnimatedSprite2D" parent="." unique_id=2081285806]

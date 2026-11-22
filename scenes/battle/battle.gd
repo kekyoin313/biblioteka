@@ -35,15 +35,15 @@ const EYES_CLOSED: Texture2D = preload(
     "res://assets/sprites/Player/Player_mata tertutup.png"
 )
 const ATTACK_CARD_TEXTURE: Texture2D = preload(
-	"res://assets/sprites/Cards/Defens.png"
+	"res://assets/sprites/Cards/Attack.png"
 )
 
 const DEFENSE_CARD_TEXTURE: Texture2D = preload(
-	"res://assets/sprites/Cards/Attac.png"
+	"res://assets/sprites/Cards/Defense.png"
 )
 
 const EVADE_CARD_TEXTURE: Texture2D = preload(
-	"res://assets/sprites/Cards/Evad.png"
+	"res://assets/sprites/Cards/Evade.png"
 )
 
 func _ready() -> void:

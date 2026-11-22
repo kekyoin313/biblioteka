@@ -13,8 +13,8 @@ const ENEMY_ATTACK_WINDUP: float = 0.35
 const RECORD_PATH := "user://battle_records.jsonl"
 const MODEL_PATH := "res://data/decision_tree_rewards.json"
 const SFX_ATTACK_MC := "res://assets/audio/sfx/attack_mc_1.mp3"
-const SFX_ATTACK_ENEMY := "res://assets/audio/sfx/attack_enemy.mp3"
-const SFX_DEFENSE_MC := "res://assets/audio/sfx/defence_up_mc.mp3"
+const SFX_ATTACK_ENEMY := "res://assets/audio/sfx/Attack_Enemy.mp3"
+const SFX_DEFENSE_MC := "res://assets/audio/sfx/Defence_Up_Mc.mp3"
 
 const TERMINAL_REWARD: float = 100.0
 const PLAYER_ACTION_DELAY: float = 1.0
@@ -223,7 +223,7 @@ func _estimate_next_player_damage() -> float:
 
 func _choose_enemy_action(features: Dictionary) -> String:
 	if is_boss_fight:
-		return _boss_policy(features)
+		return _boss_learned_policy(features)
 
 	var legal_actions: Array[String] = ["ATTACK", "DEFENSE"]
 	if enemy_enhance_ready:
@@ -233,18 +233,52 @@ func _choose_enemy_action(features: Dictionary) -> String:
 		return legal_actions[randi_range(0, legal_actions.size() - 1)]
 
 	if not learned_model.is_empty():
-		var best_action: String = legal_actions[0]
+		var best_action: String = ""
 		var best_value: float = -INF
 		for action in legal_actions:
 			var value: float = _predict_action_value(features, action)
 			if value > best_value:
 				best_value = value
 				best_action = action
-		return best_action
+		# Kalau tidak ada aksi yang bisa dinilai, jangan asal ATTACK: pakai starter policy.
+		if not best_action.is_empty():
+			return best_action
 
 	return _starter_policy(features)
 
 
+# Boss memakai model hasil belajar dari pertarungan melawan musuh biasa.
+# Tanpa aksi acak. Dua pengaman agar pertarungan tetap adil dan bisa dimenangkan:
+#  1. Kalau serangan sekarang bisa menghabisi pemain, selalu ATTACK.
+#  2. Tidak boleh DEFENSE dua kali berturut-turut (shield boss besar, bisa membuatnya kebal).
+# Kalau model belum tersedia/belum reliable, jatuh ke aturan di _boss_policy.
+func _boss_learned_policy(features: Dictionary) -> String:
+	if int(features["enemy_damage"]) >= player_hp + player_block:
+		return "ATTACK"
+
+	if learned_model.is_empty():
+		return _boss_policy(features)
+
+	var legal_actions: Array[String] = ["ATTACK", "DEFENSE"]
+	if enemy_enhance_ready:
+		legal_actions.append("ENHANCE")
+	if last_enemy_action == "DEFENSE":
+		legal_actions.erase("DEFENSE")
+
+	var best_action: String = ""
+	var best_value: float = -INF
+	for action in legal_actions:
+		var value: float = _predict_action_value(features, action)
+		if value > best_value:
+			best_value = value
+			best_action = action
+
+	if not best_action.is_empty():
+		return best_action
+	return _boss_policy(features)
+
+
+# Cadangan: kebijakan boss berbasis aturan (tanpa model).
 # Kebijakan boss: tanpa aksi acak dan tanpa model. Membaca kondisi saat ini.
 # Catatan: aksi pemain di giliran ini belum diketahui, jadi boss bereaksi pada
 # keadaan (shield pemain, HP, ancaman damage), bukan menebak pilihan pemain.
@@ -296,31 +330,45 @@ func _load_learning_model() -> void:
 		return
 	var parsed: Variant = JSON.parse_string(file.get_as_text())
 	file.close()
-	if parsed is Dictionary and parsed.get("model_type", "") == "action_value_regression":
-		learned_model = parsed
-		print("[Enemy AI] Model hasil training berhasil dimuat.")
-	else:
+	if not (parsed is Dictionary) or parsed.get("model_type", "") != "action_value_regression":
 		push_warning("Format model AI tidak dikenal. Menggunakan starter policy.")
+		return
+
+	# Model hanya dipakai kalau datanya cukup (flag ini ditulis oleh tools/train_from_matches.py).
+	if not bool(parsed.get("reliable", false)):
+		print("[Enemy AI] Model belum reliable (%d battle tercatat). Menggunakan starter policy + eksplorasi." % int(parsed.get("episodes", 0)))
+		return
+
+	# Format v2: satu pohon per aksi di dalam "trees", nama fitur di "features".
+	if not (parsed.get("trees") is Dictionary) or not (parsed.get("features") is Array):
+		push_warning("Model AI tidak punya 'trees' dan 'features' (format v2). Menggunakan starter policy.")
+		return
+
+	learned_model = parsed
+	print("[Enemy AI] Model hasil training berhasil dimuat.")
 
 
 func _predict_action_value(features: Dictionary, action: String) -> float:
-	var input_names: Array = learned_model.get("input_features", [])
-	var input_values: Array[float] = []
-	for input_name_variant in input_names:
-		var input_name: String = str(input_name_variant)
-		if input_name.begins_with("action_"):
-			input_values.append(1.0 if input_name == "action_" + action else 0.0)
-		else:
-			input_values.append(float(features.get(input_name, 0.0)))
+	var trees: Dictionary = learned_model.get("trees", {})
+	if not trees.has(action):
+		return -INF
+	var tree: Dictionary = trees[action]
 
-	var left: Array = learned_model.get("children_left", [])
-	var right: Array = learned_model.get("children_right", [])
-	var feature_indices: Array = learned_model.get("feature", [])
-	var thresholds: Array = learned_model.get("threshold", [])
-	var values: Array = learned_model.get("value", [])
+	# Urutan fitur harus sama dengan urutan saat training (indeks "feature" merujuk ke sini).
+	var feature_names: Array = learned_model.get("features", [])
+	var input_values: Array[float] = []
+	for feature_name in feature_names:
+		input_values.append(float(features.get(str(feature_name), 0.0)))
+
+	var left: Array = tree.get("children_left", [])
+	var right: Array = tree.get("children_right", [])
+	var feature_indices: Array = tree.get("feature", [])
+	var thresholds: Array = tree.get("threshold", [])
+	var values: Array = tree.get("value", [])
 	if left.is_empty() or right.is_empty() or values.is_empty():
 		return -INF
 
+	# Telusuri dari akar (node 0) sampai daun (children_left == -1).
 	var node: int = 0
 	var guard: int = 0
 	while int(left[node]) != -1 and guard < left.size():
@@ -447,4 +495,4 @@ func _execute_enemy_planned_action() -> void:
 		"ENHANCE":
 			enemy_damage_bonus += enhance_bonus
 			enemy_enhance_ready = false
-			print("[Battle] Musuh enhance +", enhance_bonus)
+			print("[Battle] Musuh enhance +", enhance_bonus)	
