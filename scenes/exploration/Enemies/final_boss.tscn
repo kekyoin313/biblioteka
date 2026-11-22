@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://uff3dx5t64ge"]
+
+[ext_resource type="Script" uid="uid://dbpyl0cev35dx" path="res://scenes/exploration/Enemies/magical_book.gd" id="1_u84eg"]
+[ext_resource type="Resource" uid="uid://ih6yhnxk0wmb" path="res://data/enemies/magical_book.tres" id="2_465xg"]
+[ext_resource type="Texture2D" uid="uid://cg1wf58byrpow" path="res://assets/sprites/Enemy/buku boss.png" id="3_u84eg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_54kd3"]
+size = Vector2(26, 31)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qw5yn"]
+size = Vector2(34, 33)
+
+[node name="MagicalBook" type="CharacterBody2D" unique_id=221629619]
+collision_layer = 4
+collision_mask = 5
+script = ExtResource("1_u84eg")
+enemy_data = ExtResource("2_465xg")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1991024622]
+scale = Vector2(0.047672536, 0.047672536)
+texture = ExtResource("3_u84eg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1406203698]
+position = Vector2(0, 1.5)
+shape = SubResource("RectangleShape2D_54kd3")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1639401380]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=965081559]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_qw5yn")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

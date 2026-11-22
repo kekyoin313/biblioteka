@@ -1,9 +1,9 @@
 extends Node2D
 
-const CARD_SCENE = preload("res://scenes/battle/Card.tscn")
 const UPGRADE_BOOK = preload("res://scenes/ui/upgrade_book.gd")
 const SHIELD_BAR_MAX: float = 30.0
 const PLAYER_HURT: Texture2D = preload("res://assets/sprites/Player/Player_mata tertutup.png")
+const SFX_CHANGE_TURN: String = "res://assets/audio/bgm/Change_Turn.wav"
 
 @onready var enemy_intent_label: Label = $EnemyArea/EnemyIntentLabel
 @onready var enemy_name_label: Label = $EnemyArea/EnemyName
@@ -35,15 +35,15 @@ const EYES_CLOSED: Texture2D = preload(
     "res://assets/sprites/Player/Player_mata tertutup.png"
 )
 const ATTACK_CARD_TEXTURE: Texture2D = preload(
-	"res://assets/sprites/Cards/Attack.png"
+	"res://assets/sprites/Cards/Defens.png"
 )
 
 const DEFENSE_CARD_TEXTURE: Texture2D = preload(
-	"res://assets/sprites/Cards/Defense.png"
+	"res://assets/sprites/Cards/Attac.png"
 )
 
 const EVADE_CARD_TEXTURE: Texture2D = preload(
-	"res://assets/sprites/Cards/Evade.png"
+	"res://assets/sprites/Cards/Evad.png"
 )
 
 func _ready() -> void:
@@ -54,10 +54,10 @@ func _ready() -> void:
 	BattleManager.enemy_hp_updated.connect(_on_enemy_hp_updated)
 	BattleManager.shield_updated.connect(_on_shield_updated)
 	BattleManager.turn_changed.connect(_on_turn_changed)
+	BattleManager.enemy_attacked.connect(_on_enemy_attacked)
 	BattleManager.battle_finished.connect(_on_battle_finished)
 	BattleManager.enemy_intent_updated.connect(_on_enemy_intent_updated)
 	BattleManager.player_evaded.connect(_on_player_evaded)
-	BattleManager.enemy_evaded.connect(_on_enemy_evaded)
 	result_label.visible = false
 	energy_label.text = "PILIH SATU AKSI"
 	_create_action_buttons()
@@ -80,15 +80,14 @@ func _ready() -> void:
 
 	if GameManager.current_enemy_data != null:
 		enemy_name_label.text = GameManager.current_enemy_data.enemy_name
-		if GameManager.current_enemy_data.battle_sprite != null:
-			enemy_sprite.texture = GameManager.current_enemy_data.battle_sprite
+		if GameManager.current_enemy_data.battle_idle_sprite != null:
+			enemy_sprite.texture = GameManager.current_enemy_data.battle_idle_sprite
 		else:
-			print("[Battle] Sprite musuh kosong di data!")
+			print("[Battle] Sprite idle musuh kosong di data!")
 	else:
 		enemy_name_label.text = "Musuh Misterius"
 		print("[Battle] Tidak ada data musuh, pakai default")
-		
-	enemy_name_label.modulate.a = 0.0
+
 	enemy_hp_bar.modulate.a = 0.0
 	enemy_intent_label.modulate.a = 0.0
 	player_hp_bar.modulate.a = 0.0
@@ -113,9 +112,6 @@ func _on_enemy_intent_updated(action: String, damage: int) -> void:
 		"ENHANCE":
 			enemy_intent_label.text = "⚡ Memperkuat Diri (serangan berikut: %d)" % damage
 			enemy_intent_label.modulate = Color.YELLOW
-		"EVADE":
-			enemy_intent_label.text = "💨 Bersiap Menghindar"
-			enemy_intent_label.modulate = Color.CYAN
 		_:
 			enemy_intent_label.text = ""
 			
@@ -171,25 +167,6 @@ func _make_shield_bar(parent_node: Node2D, hp_bar: ProgressBar, bar_name: String
 
 	return {"bar": bar, "label": label}
 
-
-func _on_hand_updated(hand: Array) -> void:
-	for child in hand_container.get_children():
-		child.queue_free()
-
-	for card_data in hand:
-		var card_ui = CARD_SCENE.instantiate()
-		card_ui.card_data = card_data
-		card_ui.card_clicked.connect(_on_card_clicked)
-		hand_container.add_child(card_ui)
-
-
-func _on_card_clicked(card_data: Resource) -> void:
-	BattleManager.play_card(card_data)
-
-
-func _on_energy_updated(current: int, max_val: int) -> void:
-	energy_label.text = "Energy: %d/%d" % [current, max_val]
-
 func _on_player_hp_updated(current: int, max_val: int) -> void:
 	player_hp_bar.show_percentage = false
 	player_hp_bar.max_value = max_val
@@ -216,7 +193,7 @@ func _on_enemy_hp_updated(current: int, max_val: int) -> void:
 		
 		var hurt_tex = null
 		if GameManager.current_enemy_data != null:
-			hurt_tex = GameManager.current_enemy_data.hurt_sprite
+			hurt_tex = GameManager.current_enemy_data.battle_hurt_sprite
 			
 		_play_hit_effect(enemy_sprite, hurt_tex)
 		
@@ -244,6 +221,8 @@ func _on_shield_updated(player_block: int, enemy_block: int) -> void:
 	last_enemy_shield = enemy_block
 
 func _on_turn_changed(turn_owner: String) -> void:
+	AudioManager.play_sfx(SFX_CHANGE_TURN) 
+	
 	if turn_owner == "player":
 		turn_label.text = "Giliranmu"
 		for child in hand_container.get_children():
@@ -353,6 +332,9 @@ func _create_action_buttons() -> void:
 		hand_container.add_child(button)
 
 func _on_action_pressed(action: String) -> void:
+	for child in hand_container.get_children():
+		if child is BaseButton:
+			child.disabled = true
 	BattleManager.choose_player_action(action)
 
 func spawn_floating_text(text: String, color: Color, target_node: Node, offset: Vector2 = Vector2.ZERO) -> void:
@@ -368,13 +350,6 @@ func _on_player_evaded(success: bool) -> void:
 		spawn_floating_text("Evade!", Color.YELLOW, player_sprite, Vector2(0, -120))
 	else:
 		spawn_floating_text("Miss!", Color.GRAY, player_sprite, Vector2(0, -120))
-
-func _on_enemy_evaded(success: bool) -> void:
-	if success:
-		spawn_floating_text("Menghindar!", Color.CYAN, enemy_sprite, Vector2(0, -120))
-	else:
-		spawn_floating_text("Gagal!", Color.GRAY, enemy_sprite, Vector2(0, -120))
-
 func _shake_node(node: Control, intensity: float = 10.0, duration: float = 0.3) -> void:
 	if not node: return
 	
@@ -408,9 +383,24 @@ func _play_hit_effect(sprite: TextureRect, hurt_texture: Texture2D) -> void:
 		
 		if sprite == player_sprite:
 			sprite.texture = EYES_OPEN
-		elif hurt_texture != null:
-			sprite.texture = original_texture
+		elif sprite == enemy_sprite:
+			sprite.texture = _enemy_idle_texture()
 
+func _enemy_idle_texture() -> Texture2D:
+	if GameManager.current_enemy_data != null:
+		return GameManager.current_enemy_data.battle_idle_sprite
+	return null
+
+
+func _on_enemy_attacked() -> void:
+	var data: EnemyData = GameManager.current_enemy_data as EnemyData
+	if data == null or data.battle_attack_sprite == null:
+		return  # tanpa sprite attack, musuh tetap pakai pose idle
+
+	enemy_sprite.texture = data.battle_attack_sprite
+	await get_tree().create_timer(BattleManager.ENEMY_ATTACK_WINDUP + 0.35).timeout
+	if is_instance_valid(enemy_sprite) and enemy_sprite.texture == data.battle_attack_sprite:
+		enemy_sprite.texture = _enemy_idle_texture()
 func _play_intro_animation() -> void:
 	await get_tree().create_timer(0.3).timeout
 	

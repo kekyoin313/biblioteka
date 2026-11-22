@@ -1,34 +1,24 @@
 [gd_scene format=3 uid="uid://cjkayl1450x1c"]
 
 [ext_resource type="Script" uid="uid://ouuukxhor51y" path="res://scenes/exploration/level_area2.gd" id="1_lvl2"]
+[ext_resource type="Texture2D" uid="uid://daf5qgcstd0qq" path="res://assets/Background/Background 2.png" id="2_doddu"]
 [ext_resource type="Script" uid="uid://bw7onr3g0nh3v" path="res://scenes/exploration/moving_shelf.gd" id="2_move"]
-[ext_resource type="Texture2D" uid="uid://dq17i18x3r363" path="res://assets/stage2_background.png" id="3_bg"]
-[ext_resource type="Texture2D" uid="uid://dp30nsggw6jl7" path="res://assets/stage2_ground.png" id="4_gr"]
-[ext_resource type="Texture2D" uid="uid://cs6u6rkm2lw8a" path="res://assets/stage2_shelf.png" id="5_sh"]
+[ext_resource type="Texture2D" uid="uid://n7u1teqaqomb" path="res://assets/Background/Midground 2.png" id="3_doddu"]
+[ext_resource type="Texture2D" uid="uid://dec2p7g37af3u" path="res://assets/tilesets/Tembok stage 2.png" id="4_4jeki"]
+[ext_resource type="Texture2D" uid="uid://c81bol570uf35" path="res://assets/tilesets/Tile 1 stage 2.png" id="4_q4x1h"]
+[ext_resource type="Texture2D" uid="uid://bxeuttf8v13xq" path="res://assets/tilesets/Tile 3 stage 2.png" id="5_rhkgj"]
 [ext_resource type="PackedScene" uid="uid://de5yyvva5orfg" path="res://scenes/exploration/Player.tscn" id="6_ply"]
 [ext_resource type="PackedScene" uid="uid://c3fm8m6jxmfsv" path="res://scenes/exploration/Enemies/BookKeeper.tscn" id="7_bk"]
+[ext_resource type="Texture2D" uid="uid://buhlewxo3t04u" path="res://assets/tilesets/tile 5 stage 2.png" id="7_sp1n6"]
 [ext_resource type="PackedScene" uid="uid://b8dkckvndru4s" path="res://scenes/exploration/Door.tscn" id="8_door"]
+[ext_resource type="Texture2D" uid="uid://ck6qt7h6v3mk" path="res://assets/tilesets/Tile 6 stage 2.png" id="9_ai3ta"]
+[ext_resource type="Texture2D" uid="uid://kb3vshfb0450" path="res://assets/tilesets/Tile 2 stage 2.png" id="10_idbik"]
 
 [sub_resource type="RectangleShape2D" id="Shape_Ground"]
-size = Vector2(3200, 60)
+size = Vector2(3239, 60)
 
 [sub_resource type="RectangleShape2D" id="Shape_Barrier"]
 size = Vector2(40, 900)
-
-[sub_resource type="RectangleShape2D" id="Shape_Shelf192"]
-size = Vector2(192, 14)
-
-[sub_resource type="RectangleShape2D" id="Shape_Shelf160"]
-size = Vector2(160, 14)
-
-[sub_resource type="RectangleShape2D" id="Shape_Shelf224"]
-size = Vector2(224, 14)
-
-[sub_resource type="RectangleShape2D" id="Shape_Shelf256"]
-size = Vector2(256, 14)
-
-[sub_resource type="RectangleShape2D" id="Shape_Shelf288"]
-size = Vector2(288, 14)
 
 [node name="Level" type="Node2D" unique_id=2138023436]
 script = ExtResource("1_lvl2")
@@ -36,23 +26,42 @@ script = ExtResource("1_lvl2")
 [node name="Background" type="Sprite2D" parent="." unique_id=215150712]
 z_index = -20
 texture_filter = 1
-position = Vector2(0, 160)
-texture = ExtResource("3_bg")
+position = Vector2(14, 1.0000001)
+scale = Vector2(0.6503898, 0.3270142)
+texture = ExtResource("2_doddu")
 centered = false
+
+[node name="Midground" type="Sprite2D" parent="." unique_id=583023409]
+position = Vector2(1599.0001, 456)
+scale = Vector2(0.651123, 0.32690912)
+texture = ExtResource("3_doddu")
+
+[node name="Tembok" type="StaticBody2D" parent="." unique_id=530964128]
+position = Vector2(380, 811.00006)
+scale = Vector2(0.37640333, 0.37640333)
+
+[node name="Sprite2D" type="Sprite2D" parent="Tembok" unique_id=1400783374]
+position = Vector2(26.56724, -138.14983)
+scale = Vector2(1.972138, 1.972138)
+texture = ExtResource("4_4jeki")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Tembok" unique_id=1397343847]
+visible = false
+position = Vector2(26.56724, -138.14983)
+scale = Vector2(1.972138, 1.972138)
+polygon = PackedVector2Array(48.5, -121.4, 5.5, -122.6, 5.5, -121.3, -16.699997, -118.5, -22, -118.5, -34, -111.5, -36.6, -111.5, -35.5, -89.4, -35.5, -80.2, -30.5, -65.2, -28.289703, 66.00934, -32.331116, 74.0921, -48.496643, 92.951965, -56.579437, 111.81171, -56.579437, 118.547424, -57.926544, 125.28302, -63.315063, 130.67157, -66.00934, 134.71295, 75.43921, 134.71295, 75.43921, 130.67157, 66.00934, 114.50592, 66.00934, 102.381775, 66.00934, 98.34039, 64.5, 65.7, 64.5, -66.3, 68, -77.5, 69.399994, -77.5, 70.5, -97.4, 70.5, -111.7, 61.5, -116.7, 61.5, -118.2, 48.5, -120.3)
 
 [node name="Ground" type="StaticBody2D" parent="." unique_id=1856503850]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=47007852]
-position = Vector2(1600, 830)
-shape = SubResource("Shape_Ground")
+[node name="Sprite2D" type="Sprite2D" parent="Ground" unique_id=1592977438]
+position = Vector2(1591.0001, 879)
+scale = Vector2(1.5874025, 1.3300016)
+texture = ExtResource("4_q4x1h")
 
-[node name="Art" type="TextureRect" parent="Ground" unique_id=144439455]
-texture_filter = 1
-offset_top = 800.0
-offset_right = 3200.0
-offset_bottom = 912.0
-mouse_filter = 2
-texture = ExtResource("4_gr")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=47007852]
+position = Vector2(1577.5, 891)
+scale = Vector2(1.000269, 1)
+shape = SubResource("Shape_Ground")
 
 [node name="Barriers" type="StaticBody2D" parent="." unique_id=702716548]
 
@@ -61,7 +70,7 @@ position = Vector2(-20, 460)
 shape = SubResource("Shape_Barrier")
 
 [node name="Right" type="CollisionShape2D" parent="Barriers" unique_id=745266143]
-position = Vector2(3220, 460)
+position = Vector2(3190, 460)
 shape = SubResource("Shape_Barrier")
 
 [node name="Shelves" type="Node2D" parent="." unique_id=1722311528]
@@ -69,19 +78,16 @@ shape = SubResource("Shape_Barrier")
 [node name="Shelf1" type="StaticBody2D" parent="Shelves" unique_id=1077370233]
 position = Vector2(620, 720)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf1" unique_id=1516512532]
-position = Vector2(96, 7)
-shape = SubResource("Shape_Shelf192")
-one_way_collision = true
+[node name="Sprite2D" type="Sprite2D" parent="Shelves/Shelf1" unique_id=759168205]
+position = Vector2(98.78288, -2.0000005)
+scale = Vector2(0.33781883, 0.2574854)
+texture = ExtResource("5_rhkgj")
 
-[node name="Art" type="TextureRect" parent="Shelves/Shelf1" unique_id=558919253]
-texture_filter = 1
-offset_right = 192.0
-offset_bottom = 32.0
-mouse_filter = 2
-texture = ExtResource("5_sh")
-expand_mode = 1
-stretch_mode = 1
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Shelves/Shelf1" unique_id=2128537096]
+visible = false
+position = Vector2(98.78288, -2.0000005)
+scale = Vector2(0.33781883, 0.2574854)
+polygon = PackedVector2Array(-283.53333, 11.651123, -292.41382, 23.302246, -295.37402, 31.069824, -294.5, 41.300003, -294.5, 60.399994, -286.5, 79.3, -286.5, 81.600006, -269.4, 109, -275, 106, -283.5, 106, -283.5, 115.20001, -287.3, 119, -288.8, 119, -289.7, 121, -296.2, 121, -303.5, 127.100006, -303.5, 131.5, -294.8, 134, -294.2, 134, -293.5, 138.29999, -293.5, 142.20001, -282.4, 136.6, -278.9, 138, -276.9, 138, -277.5, 141.79999, -277.5, 149.5, -264.5, 153.4, -264.5, 156, -254.2, 156, -253.8, 155.5, -253.5, 156, 208.5, 156, 213.5, 135.20001, 213.5, 130.4, 214.5, 128.6, 214.5, 129.79999, 218.5, 133.79999, 218.5, 135.29999, 219.5, 135.70001, 218.5, 137.5, 218.5, 140.79999, 221.70001, 144, 225.59998, 144, 229.59998, 138, 231.5, 138, 231.5, 130.1, 234.5, 128.1, 234.5, 123.100006, 232.09998, 121, 233, 121.399994, 235.29999, 119, 237.5, 119, 237.5, 110.20001, 230.70001, 103.399994, 232.59998, 103, 235.5, 103, 242.40002, 93.5, 256.2, 122, 259.8, 122, 276.5, 85.399994, 276.5, 84.100006, 278.2, 82.899994, 279.90002, 84, 283.5, 84, 286.5, 80, 288.59998, 80, 294.59998, 87, 297.59998, 87, 299.59998, 84, 302.5, 84, 299.5, 76.7, 302.3, 74, 303.7, 74, 304.8, 71.899994, 302.5, 68.3, 302.5, 66, 295.3, 66, 294.3, 67.899994, 289.5, 63.100006, 289.5, 60.199997, 280.8, 63, 281.8, 61, 283.7, 61, 282.5, 48.800003, 282.5, 38.300003, 287.5, 23.300003, 287.5, 20.300003, 264.0974, 11.651123, 53.925537, 11.651123)
 
 [node name="Shelf2" type="AnimatableBody2D" parent="Shelves" unique_id=569809475]
 position = Vector2(900, 660)
@@ -89,36 +95,47 @@ script = ExtResource("2_move")
 travel = Vector2(0, -90)
 duration = 3.2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf2" unique_id=1284910913]
-position = Vector2(80, 7)
-shape = SubResource("Shape_Shelf160")
-one_way_collision = true
+[node name="Sprite2D" type="Sprite2D" parent="Shelves/Shelf2" unique_id=633823972]
+position = Vector2(81.50005, -10.993296)
+scale = Vector2(0.28548396, 0.23573546)
+texture = ExtResource("7_sp1n6")
 
-[node name="Art" type="TextureRect" parent="Shelves/Shelf2" unique_id=156129971]
-texture_filter = 1
-offset_right = 160.0
-offset_bottom = 32.0
-mouse_filter = 2
-texture = ExtResource("5_sh")
-expand_mode = 1
-stretch_mode = 1
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Shelves/Shelf2" unique_id=33735899]
+visible = false
+position = Vector2(81.50005, -11.679472)
+scale = Vector2(0.28548396, 0.23086998)
+polygon = PackedVector2Array(89.32178, 16.491943, -36.779785, 16.491943, -288.5, 18.5, -290.2, 18.5, -292, 22, -292, 34.100006, -281, 49.5, -281, 63.899994, -274.1, 82.2, -278.6, 80.5, -283.6, 80.5, -290.6, 85.5, -292.9, 85.5, -306.9, 102.5, -309.9, 102.5, -306, 112.899994, -306, 114.70001, -303.9, 115.79999, -297.4, 111.5, -295.2, 111.5, -290, 122.79999, -290, 124.79999, -287.5, 125.899994, -278.7, 116.899994, -272.8, 124.399994, -273, 128, -269, 136, -269, 137.70001, -266.8, 138.79999, -262.3, 135.5, -259.6, 135.5, -260.8, 129.1, -255, 128.20001, -248.2, 129.5, -197.1, 129.5, -196, 131.1, -196, 133.1, -188, 135, -188, 136.70001, -166.8, 134.5, -161.5, 134.5, -152.5, 129.5, -82.600006, 129.5, -73, 134.70001, -73, 136.4, -59, 137.29999, -59, 138.9, -46.600006, 136.5, -41.200012, 136.5, -35, 130.29999, -35, 128.5, 214, 130.4, 214, 131.70001, 236.20001, 129.5, 244.79999, 129.5, 249.79999, 124.5, 251.40002, 124.5, 254.5, 115.899994, 258, 116.899994, 258, 117.79999, 260.5, 118.899994, 263.8, 115.5, 267.2, 115.5, 265, 111, 265, 107.399994, 272.7, 101.5, 274.2, 101.5, 275.3, 99.399994, 271.2, 93.2, 277.2, 92.5, 279.3, 92.5, 280.3, 90.2, 276, 84.8, 276, 82.5, 272, 82.5, 269.7, 81.100006, 267.40002, 83, 269, 80, 269, 70.3, 267.96582, 65.967285, 267.96582, 49.475586, 278.47437, 32.983643, 278.47437, 27.486328, 278.47437, 21.989014, 267.96582, 16.491943, 239.94336, 10.994629)
 
 [node name="Shelf3" type="StaticBody2D" parent="Shelves" unique_id=918196357]
 position = Vector2(1180, 560)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf3" unique_id=859674349]
-position = Vector2(112, 7)
-shape = SubResource("Shape_Shelf224")
-one_way_collision = true
+[node name="Sprite2D" type="Sprite2D" parent="Shelves/Shelf3" unique_id=157590614]
+position = Vector2(92, 18)
+scale = Vector2(0.22115384, 0.22115384)
+texture = ExtResource("5_rhkgj")
+flip_h = true
 
-[node name="Art" type="TextureRect" parent="Shelves/Shelf3" unique_id=1498382579]
-texture_filter = 1
-offset_right = 224.0
-offset_bottom = 32.0
-mouse_filter = 2
-texture = ExtResource("5_sh")
-expand_mode = 1
-stretch_mode = 1
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Shelves/Shelf3" unique_id=1572204976]
+visible = false
+position = Vector2(95.000046, 17)
+scale = Vector2(0.22091085, 0.24368638)
+polygon = PackedVector2Array(-283.53333, 11.651123, -292.41382, 23.302246, -295.37402, 31.069824, -294.5, 41.300003, -294.5, 60.399994, -286.5, 79.3, -286.5, 81.600006, -269.4, 109, -275, 106, -283.5, 106, -283.5, 115.20001, -287.3, 119, -288.8, 119, -289.7, 121, -296.2, 121, -303.5, 127.100006, -303.5, 131.5, -294.8, 134, -294.2, 134, -293.5, 138.29999, -293.5, 142.20001, -282.4, 136.6, -278.9, 138, -276.9, 138, -277.5, 141.79999, -277.5, 149.5, -264.5, 153.4, -264.5, 156, -254.2, 156, -253.8, 155.5, -253.5, 156, 208.5, 156, 213.5, 135.20001, 213.5, 130.4, 214.5, 128.6, 214.5, 129.79999, 218.5, 133.79999, 218.5, 135.29999, 219.5, 135.70001, 218.5, 137.5, 218.5, 140.79999, 221.70001, 144, 225.59998, 144, 229.59998, 138, 231.5, 138, 231.5, 130.1, 234.5, 128.1, 234.5, 123.100006, 232.09998, 121, 233, 121.399994, 235.29999, 119, 237.5, 119, 237.5, 110.20001, 230.70001, 103.399994, 232.59998, 103, 235.5, 103, 242.40002, 93.5, 256.2, 122, 259.8, 122, 276.5, 85.399994, 276.5, 84.100006, 278.2, 82.899994, 279.90002, 84, 283.5, 84, 286.5, 80, 288.59998, 80, 294.59998, 87, 297.59998, 87, 299.59998, 84, 302.5, 84, 299.5, 76.7, 302.3, 74, 303.7, 74, 304.8, 71.899994, 302.5, 68.3, 302.5, 66, 295.3, 66, 294.3, 67.899994, 289.5, 63.100006, 289.5, 60.199997, 280.8, 63, 281.8, 61, 283.7, 61, 282.5, 48.800003, 282.5, 38.300003, 287.5, 23.300003, 287.5, 20.300003, 264.0974, 11.651123, 53.925537, 11.651123)
+
+[node name="Shelf7" type="StaticBody2D" parent="Shelves" unique_id=197842367]
+show_behind_parent = true
+position = Vector2(2380, 326)
+
+[node name="Sprite2D" type="Sprite2D" parent="Shelves/Shelf7" unique_id=208849859]
+position = Vector2(92, 18)
+scale = Vector2(0.22115384, 0.22115384)
+texture = ExtResource("5_rhkgj")
+flip_h = true
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Shelves/Shelf7" unique_id=1440892631]
+visible = false
+position = Vector2(95.000046, 18)
+scale = Vector2(0.22091085, 0.24368638)
+polygon = PackedVector2Array(-283.53333, 11.651123, -292.41382, 23.302246, -295.37402, 31.069824, -294.5, 41.300003, -294.5, 60.399994, -286.5, 79.3, -286.5, 81.600006, -269.4, 109, -275, 106, -283.5, 106, -283.5, 115.20001, -287.3, 119, -288.8, 119, -289.7, 121, -296.2, 121, -303.5, 127.100006, -303.5, 131.5, -294.8, 134, -294.2, 134, -293.5, 138.29999, -293.5, 142.20001, -282.4, 136.6, -278.9, 138, -276.9, 138, -277.5, 141.79999, -277.5, 149.5, -264.5, 153.4, -264.5, 156, -254.2, 156, -253.8, 155.5, -253.5, 156, 208.5, 156, 213.5, 135.20001, 213.5, 130.4, 214.5, 128.6, 214.5, 129.79999, 218.5, 133.79999, 218.5, 135.29999, 219.5, 135.70001, 218.5, 137.5, 218.5, 140.79999, 221.70001, 144, 225.59998, 144, 229.59998, 138, 231.5, 138, 231.5, 130.1, 234.5, 128.1, 234.5, 123.100006, 232.09998, 121, 233, 121.399994, 235.29999, 119, 237.5, 119, 237.5, 110.20001, 230.70001, 103.399994, 232.59998, 103, 235.5, 103, 242.40002, 93.5, 256.2, 122, 259.8, 122, 276.5, 85.399994, 276.5, 84.100006, 278.2, 82.899994, 279.90002, 84, 283.5, 84, 286.5, 80, 288.59998, 80, 294.59998, 87, 297.59998, 87, 299.59998, 84, 302.5, 84, 299.5, 76.7, 302.3, 74, 303.7, 74, 304.8, 71.899994, 302.5, 68.3, 302.5, 66, 295.3, 66, 294.3, 67.899994, 289.5, 63.100006, 289.5, 60.199997, 280.8, 63, 281.8, 61, 283.7, 61, 282.5, 48.800003, 282.5, 38.300003, 287.5, 23.300003, 287.5, 20.300003, 264.0974, 11.651123, 53.925537, 11.651123)
 
 [node name="Shelf4" type="AnimatableBody2D" parent="Shelves" unique_id=749499831]
 position = Vector2(1480, 540)
@@ -126,36 +143,64 @@ script = ExtResource("2_move")
 duration = 3.6
 phase = 0.8
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf4" unique_id=2001968896]
-position = Vector2(80, 7)
-shape = SubResource("Shape_Shelf160")
-one_way_collision = true
+[node name="Sprite2D" type="Sprite2D" parent="Shelves/Shelf4" unique_id=1234549330]
+position = Vector2(80.64216, -1.5000105)
+scale = Vector2(0.09818984, 0.10934398)
+texture = ExtResource("9_ai3ta")
 
-[node name="Art" type="TextureRect" parent="Shelves/Shelf4" unique_id=503432326]
-texture_filter = 1
-offset_right = 160.0
-offset_bottom = 32.0
-mouse_filter = 2
-texture = ExtResource("5_sh")
-expand_mode = 1
-stretch_mode = 1
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Shelves/Shelf4" unique_id=1163908603]
+visible = false
+position = Vector2(80.64216, -1.5000105)
+scale = Vector2(0.09818984, 0.10934398)
+polygon = PackedVector2Array(502.67773, 32.00879, -525.9424, 32.00879, -627.78613, 32.00879, -688.8916, 32.00879, -739.8135, 32.00879, -770.3672, 32.00879, -821.28906, 32.00879, -839.1, 29.5, -841.5, 29.5, -845.5, 34.5, -847.5, 34.5, -847.5, 41.5, -849.7, 41.5, -847.5, 45.899994, -847.5, 54.299988, -839.3, 62.5, -838.5, 70.70001, -838.5, 76.29999, -830.3, 84.5, -821.4, 108.100006, -824.5, 112.5, -825.8, 112.5, -826.9, 115, -826.4, 115.5, -833.5, 124.5, -834.7, 124.5, -835.8, 126.600006, -833.5, 130.1, -833.5, 136.29999, -830.3, 139.5, -827.9, 139.5, -818.3, 132.70001, -815, 136.9, -815.5, 139.29999, -815.5, 142.1, -810.5, 150.1, -810.5, 152.70001, -784.9, 150.6, -786.5, 154, -786.5, 155.9, -781.5, 166.79999, -781.5, 168.79999, -779, 169.9, -772.7, 163.5, -771.3, 163.5, -770.2, 161.5, -773.2, 156.5, -764.5, 156.5, -764.5, 151.5, -740.5, 151.5, -740.5, 150.5, -620.5, 152.4, -620.5, 153.5, -467.5, 151.5, -402.6, 151.5, -383.5, 156.9, -383.5, 158.4, -356.5, 159.4, -356.5, 160.70001, -341.3, 159.5, -329.2, 159.5, -305.5, 152, -237.5, 151.5, -237.5, 150.5, 798.5, 152.4, 798.5, 154.1, 812.6, 150.5, 829.6, 150.5, 840.5, 134.5, 842.1, 134.5, 844.5, 124.70001, 844.5, 122, 851.69995, 108.5, 852.9, 108.5, 863.9, 77.5, 866.4, 77.5, 854.5, 45, 854.5, 37.799988, 850.5, 32.799988, 850.5, 30.299988, 838.7617, 32.00879, 828.5762, 32.00879, 828.5762, 32.00879, 808.20703, 32.00879)
+
+[node name="Shelf8" type="StaticBody2D" parent="Shelves" unique_id=834217299]
+position = Vector2(3013, 244)
+scale = Vector2(1.8768135, 2.3355365)
+
+[node name="Sprite2D" type="Sprite2D" parent="Shelves/Shelf8" unique_id=376693060]
+position = Vector2(-2.7656555e-05, -8.99151)
+scale = Vector2(0.09818984, 0.10934398)
+texture = ExtResource("9_ai3ta")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Shelves/Shelf8" unique_id=2020031593]
+visible = false
+position = Vector2(80.64216, -1.5000105)
+scale = Vector2(0.09818984, 0.10934398)
+polygon = PackedVector2Array(502.67773, 32.00879, -525.9424, 32.00879, -627.78613, 32.00879, -688.8916, 32.00879, -739.8135, 32.00879, -770.3672, 32.00879, -821.28906, 32.00879, -839.1, 29.5, -841.5, 29.5, -845.5, 34.5, -847.5, 34.5, -847.5, 41.5, -849.7, 41.5, -847.5, 45.899994, -847.5, 54.299988, -839.3, 62.5, -838.5, 70.70001, -838.5, 76.29999, -830.3, 84.5, -821.4, 108.100006, -824.5, 112.5, -825.8, 112.5, -826.9, 115, -826.4, 115.5, -833.5, 124.5, -834.7, 124.5, -835.8, 126.600006, -833.5, 130.1, -833.5, 136.29999, -830.3, 139.5, -827.9, 139.5, -818.3, 132.70001, -815, 136.9, -815.5, 139.29999, -815.5, 142.1, -810.5, 150.1, -810.5, 152.70001, -784.9, 150.6, -786.5, 154, -786.5, 155.9, -781.5, 166.79999, -781.5, 168.79999, -779, 169.9, -772.7, 163.5, -771.3, 163.5, -770.2, 161.5, -773.2, 156.5, -764.5, 156.5, -764.5, 151.5, -740.5, 151.5, -740.5, 150.5, -620.5, 152.4, -620.5, 153.5, -467.5, 151.5, -402.6, 151.5, -383.5, 156.9, -383.5, 158.4, -356.5, 159.4, -356.5, 160.70001, -341.3, 159.5, -329.2, 159.5, -305.5, 152, -237.5, 151.5, -237.5, 150.5, 798.5, 152.4, 798.5, 154.1, 812.6, 150.5, 829.6, 150.5, 840.5, 134.5, 842.1, 134.5, 844.5, 124.70001, 844.5, 122, 851.69995, 108.5, 852.9, 108.5, 863.9, 77.5, 866.4, 77.5, 854.5, 45, 854.5, 37.799988, 850.5, 32.799988, 850.5, 30.299988, 838.7617, 32.00879, 828.5762, 32.00879, 828.5762, 32.00879, 808.20703, 32.00879)
+
+[node name="Shelf10" type="AnimatableBody2D" parent="Shelves" unique_id=2096853865]
+position = Vector2(250, 815)
+scale = Vector2(0.73782825, 0.73782825)
+script = ExtResource("2_move")
+duration = 3.6
+phase = 0.8
+
+[node name="Sprite2D" type="Sprite2D" parent="Shelves/Shelf10" unique_id=804061962]
+position = Vector2(80.64216, -1.5000105)
+scale = Vector2(0.09818984, 0.10934398)
+texture = ExtResource("9_ai3ta")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Shelves/Shelf10" unique_id=1744702385]
+visible = false
+position = Vector2(80.64216, -1.5000105)
+scale = Vector2(0.09818984, 0.10934398)
+polygon = PackedVector2Array(502.67773, 32.00879, -525.9424, 32.00879, -627.78613, 32.00879, -688.8916, 32.00879, -739.8135, 32.00879, -770.3672, 32.00879, -821.28906, 32.00879, -839.1, 29.5, -841.5, 29.5, -845.5, 34.5, -847.5, 34.5, -847.5, 41.5, -849.7, 41.5, -847.5, 45.899994, -847.5, 54.299988, -839.3, 62.5, -838.5, 70.70001, -838.5, 76.29999, -830.3, 84.5, -821.4, 108.100006, -824.5, 112.5, -825.8, 112.5, -826.9, 115, -826.4, 115.5, -833.5, 124.5, -834.7, 124.5, -835.8, 126.600006, -833.5, 130.1, -833.5, 136.29999, -830.3, 139.5, -827.9, 139.5, -818.3, 132.70001, -815, 136.9, -815.5, 139.29999, -815.5, 142.1, -810.5, 150.1, -810.5, 152.70001, -784.9, 150.6, -786.5, 154, -786.5, 155.9, -781.5, 166.79999, -781.5, 168.79999, -779, 169.9, -772.7, 163.5, -771.3, 163.5, -770.2, 161.5, -773.2, 156.5, -764.5, 156.5, -764.5, 151.5, -740.5, 151.5, -740.5, 150.5, -620.5, 152.4, -620.5, 153.5, -467.5, 151.5, -402.6, 151.5, -383.5, 156.9, -383.5, 158.4, -356.5, 159.4, -356.5, 160.70001, -341.3, 159.5, -329.2, 159.5, -305.5, 152, -237.5, 151.5, -237.5, 150.5, 798.5, 152.4, 798.5, 154.1, 812.6, 150.5, 829.6, 150.5, 840.5, 134.5, 842.1, 134.5, 844.5, 124.70001, 844.5, 122, 851.69995, 108.5, 852.9, 108.5, 863.9, 77.5, 866.4, 77.5, 854.5, 45, 854.5, 37.799988, 850.5, 32.799988, 850.5, 30.299988, 838.7617, 32.00879, 828.5762, 32.00879, 828.5762, 32.00879, 808.20703, 32.00879)
 
 [node name="Shelf5" type="StaticBody2D" parent="Shelves" unique_id=913927551]
 position = Vector2(1760, 430)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf5" unique_id=1459966971]
-position = Vector2(128, 7)
-shape = SubResource("Shape_Shelf256")
-one_way_collision = true
+[node name="Sprite2D" type="Sprite2D" parent="Shelves/Shelf5" unique_id=952270733]
+position = Vector2(129.83173, 0.9999995)
+scale = Vector2(0.45215607, 0.37205386)
+texture = ExtResource("7_sp1n6")
+flip_h = true
 
-[node name="Art" type="TextureRect" parent="Shelves/Shelf5" unique_id=61555865]
-texture_filter = 1
-offset_right = 256.0
-offset_bottom = 32.0
-mouse_filter = 2
-texture = ExtResource("5_sh")
-expand_mode = 1
-stretch_mode = 1
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Shelves/Shelf5" unique_id=527415590]
+visible = false
+position = Vector2(141.00006, 1.0000013)
+scale = Vector2(0.47026318, 0.36018494)
+polygon = PackedVector2Array(89.32178, 16.491943, -36.779785, 16.491943, -288.5, 18.5, -290.2, 18.5, -292, 22, -292, 34.100006, -281, 49.5, -281, 63.899994, -278.56763, 77.737915, -276.44116, 83.29053, -274.3147, 94.395996, -270.06177, 105.50134, -265.80884, 113.830444, -260.8, 129.1, -255, 128.20001, -248.2, 129.5, -197.1, 129.5, -196, 131.1, -196, 133.1, -188, 135, -188, 136.70001, -166.8, 134.5, -161.5, 134.5, -152.5, 129.5, -82.600006, 129.5, -73, 134.70001, -73, 136.4, -59, 137.29999, -59, 138.9, -46.600006, 136.5, -41.200012, 136.5, -35, 130.29999, -35, 128.5, 214, 130.4, 214, 131.70001, 236.20001, 129.5, 244.79999, 129.5, 249.79999, 124.5, 251.40002, 124.5, 254.5, 115.899994, 258, 116.899994, 258, 117.79999, 260.5, 118.899994, 263.8, 115.5, 267.2, 115.5, 267.93506, 111.05408, 270.06152, 108.27771, 265.8086, 99.94873, 261.55566, 97.17236, 255.17627, 91.61963, 246.67041, 86.066895, 236.03809, 88.84326, 240.29102, 74.96155, 242.41748, 61.079712, 242.41748, 49.974365, 250.92334, 33.316284, 250.92334, 22.210815, 240.29102, 16.658203)
 
 [node name="Shelf6" type="AnimatableBody2D" parent="Shelves" unique_id=469524761]
 position = Vector2(2080, 400)
@@ -163,74 +208,30 @@ script = ExtResource("2_move")
 travel = Vector2(160, 0)
 duration = 4.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf6" unique_id=498254311]
-position = Vector2(80, 7)
-shape = SubResource("Shape_Shelf160")
-one_way_collision = true
+[node name="Sprite2D" type="Sprite2D" parent="Shelves/Shelf6" unique_id=827072942]
+position = Vector2(130, 1.0000019)
+scale = Vector2(0.18465047, 0.18465048)
+texture = ExtResource("10_idbik")
 
-[node name="Art" type="TextureRect" parent="Shelves/Shelf6" unique_id=1954075344]
-texture_filter = 1
-offset_right = 160.0
-offset_bottom = 32.0
-mouse_filter = 2
-texture = ExtResource("5_sh")
-expand_mode = 1
-stretch_mode = 1
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Shelves/Shelf6" unique_id=1490509746]
+visible = false
+position = Vector2(130, 1.0000019)
+scale = Vector2(0.18465047, 0.18465048)
+polygon = PackedVector2Array(-444.08203, -16.246826, -536.14746, -16.246826, -541.5635, -10.831299, -536.14746, -5.4155273, -534.1, 8.5, -529.4, 38, -532.9, 37.5, -537, 37.5, -542, 44.5, -543, 44.5, -543, 48.199997, -539.8, 50.800003, -542.5, 52.5, -543, 72.7, -540, 70.899994, -540, 72.7, -542.8, 75.5, -543, 83.7, -542, 84.2, -543, 84.899994, -543, 98.899994, -540.1, 100.899994, -543, 103, -543, 111.79999, -542, 113.100006, -542, 114.70001, -539.9, 115.79999, -537.8, 114.399994, -537, 124.70001, -537, 127.29999, -533.8, 130.5, -535, 130.5, -532, 137.9, -532, 139.9, -529.3, 140.9, -523, 132.5, -521.4, 132.5, -519.3, 122.5, -517.2, 122.5, -519, 117.100006, -519, 113.29999, -516.4, 111.5, -514, 111.5, -514, 101.600006, -522, 94.600006, -518.6, 93.5, -517.1, 93.5, -511.1, 86.5, -509.7, 86.5, -506.7, 79.5, -505.8, 79.5, -504.7, 77.3, -505.3, 76.5, -504.3, 76.5, -500.3, 73.5, -498.9, 73.5, -470.8, 99.5, -470.1, 99.5, -460.1, 116.5, -459.4, 116.5, -452, 134.9, -452, 138.6, -446, 142.6, -446, 144.4, -432, 145.29999, -432, 146.5, 229, 144.5, 262.2, 144.5, 265.2, 147.5, 294.59998, 147.5, 299, 144.6, 398, 144.5, 401, 140.5, 403.3, 140.5, 402, 130.29999, 402, 118.899994, 398.2, 112.70001, 400, 99.600006, 400, 95.79999, 412, 69.899994, 412, 68, 425, 49.5, 425.8, 49.5, 428, 54, 428, 57.199997, 414, 102.20001, 414, 105.899994, 434.7, 154.5, 438.40002, 154.5, 455.40002, 107.5, 457.59998, 107.5, 445.90002, 64.7, 448, 68.899994, 448, 71.3, 451.2, 74.5, 455, 74.5, 458, 70.5, 459.40002, 70.5, 464, 57.899994, 464, 56.100006, 473, 43.5, 475, 43.5, 475, 29.199997, 479.90002, 23.5, 481.80005, 23.5, 483, 12.600006, 483, 7.5, 485.19995, 5.800003, 486.19995, 15.5, 490.19995, 15.5, 496.19995, 3.5, 497.19995, 3.5, 498.30005, 1.5, 496.09998, -2.199997, 498.23926, -5.4155273, 492.82324, -5.4155273, 492.82324, -10.831299, 487.40723, -16.246826, 465.74512, -16.246826, 433.25098, -16.246826, 411.58887, -16.246826, 303.27637, -16.246826, 200.3789, -16.246826, -287.02832, -16.246826)
 
-[node name="Shelf7" type="StaticBody2D" parent="Shelves" unique_id=357287535]
-position = Vector2(2400, 330)
+[node name="Shelf9" type="StaticBody2D" parent="Shelves" unique_id=156337918]
+position = Vector2(2636, 300)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf7" unique_id=284114787]
-position = Vector2(112, 7)
-shape = SubResource("Shape_Shelf224")
-one_way_collision = true
+[node name="Sprite2D" type="Sprite2D" parent="Shelves/Shelf9" unique_id=491295519]
+position = Vector2(130, 1.0000019)
+scale = Vector2(0.18465047, 0.18465048)
+texture = ExtResource("10_idbik")
 
-[node name="Art" type="TextureRect" parent="Shelves/Shelf7" unique_id=890147335]
-texture_filter = 1
-offset_right = 224.0
-offset_bottom = 32.0
-mouse_filter = 2
-texture = ExtResource("5_sh")
-expand_mode = 1
-stretch_mode = 1
-
-[node name="Shelf8" type="AnimatableBody2D" parent="Shelves" unique_id=295564623]
-position = Vector2(2680, 280)
-script = ExtResource("2_move")
-travel = Vector2(0, 90)
-duration = 3.4
-phase = 1.2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf8" unique_id=1977300626]
-position = Vector2(80, 7)
-shape = SubResource("Shape_Shelf160")
-one_way_collision = true
-
-[node name="Art" type="TextureRect" parent="Shelves/Shelf8" unique_id=896077333]
-texture_filter = 1
-offset_right = 160.0
-offset_bottom = 32.0
-mouse_filter = 2
-texture = ExtResource("5_sh")
-expand_mode = 1
-stretch_mode = 1
-
-[node name="Shelf9" type="StaticBody2D" parent="Shelves" unique_id=1937925382]
-position = Vector2(2900, 230)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Shelves/Shelf9" unique_id=1388654046]
-position = Vector2(144, 7)
-shape = SubResource("Shape_Shelf288")
-one_way_collision = true
-
-[node name="Art" type="TextureRect" parent="Shelves/Shelf9" unique_id=835363073]
-texture_filter = 1
-offset_right = 288.0
-offset_bottom = 32.0
-mouse_filter = 2
-texture = ExtResource("5_sh")
-expand_mode = 1
-stretch_mode = 1
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Shelves/Shelf9" unique_id=445264495]
+visible = false
+position = Vector2(130, 1.0000019)
+scale = Vector2(0.18465047, 0.18465048)
+polygon = PackedVector2Array(-444.08203, -16.246826, -536.14746, -16.246826, -541.5635, -10.831299, -536.14746, -5.4155273, -534.1, 8.5, -529.4, 38, -532.9, 37.5, -537, 37.5, -542, 44.5, -543, 44.5, -543, 48.199997, -539.8, 50.800003, -542.5, 52.5, -543, 72.7, -540, 70.899994, -540, 72.7, -542.8, 75.5, -543, 83.7, -542, 84.2, -543, 84.899994, -543, 98.899994, -540.1, 100.899994, -543, 103, -543, 111.79999, -542, 113.100006, -542, 114.70001, -539.9, 115.79999, -537.8, 114.399994, -537, 124.70001, -537, 127.29999, -533.8, 130.5, -535, 130.5, -532, 137.9, -532, 139.9, -529.3, 140.9, -523, 132.5, -521.4, 132.5, -519.3, 122.5, -517.2, 122.5, -519, 117.100006, -519, 113.29999, -516.4, 111.5, -514, 111.5, -514, 101.600006, -522, 94.600006, -518.6, 93.5, -517.1, 93.5, -511.1, 86.5, -509.7, 86.5, -506.7, 79.5, -505.8, 79.5, -504.7, 77.3, -505.3, 76.5, -504.3, 76.5, -500.3, 73.5, -498.9, 73.5, -470.8, 99.5, -470.1, 99.5, -460.1, 116.5, -459.4, 116.5, -452, 134.9, -452, 138.6, -446, 142.6, -446, 144.4, -432, 145.29999, -432, 146.5, 229, 144.5, 262.2, 144.5, 265.2, 147.5, 294.59998, 147.5, 299, 144.6, 398, 144.5, 401, 140.5, 403.3, 140.5, 402, 130.29999, 402, 118.899994, 398.2, 112.70001, 400, 99.600006, 400, 95.79999, 412, 69.899994, 412, 68, 425, 49.5, 425.8, 49.5, 428, 54, 428, 57.199997, 414, 102.20001, 414, 105.899994, 434.7, 154.5, 438.40002, 154.5, 455.40002, 107.5, 457.59998, 107.5, 445.90002, 64.7, 448, 68.899994, 448, 71.3, 451.2, 74.5, 455, 74.5, 458, 70.5, 459.40002, 70.5, 464, 57.899994, 464, 56.100006, 473, 43.5, 475, 43.5, 475, 29.199997, 479.90002, 23.5, 481.80005, 23.5, 483, 12.600006, 483, 7.5, 485.19995, 5.800003, 486.19995, 15.5, 490.19995, 15.5, 496.19995, 3.5, 497.19995, 3.5, 498.30005, 1.5, 496.09998, -2.199997, 498.23926, -5.4155273, 492.82324, -5.4155273, 492.82324, -10.831299, 487.40723, -16.246826, 465.74512, -16.246826, 433.25098, -16.246826, 411.58887, -16.246826, 303.27637, -16.246826, 200.3789, -16.246826, -287.02832, -16.246826)
 
 [node name="ExitDoor" parent="." unique_id=172347043 instance=ExtResource("8_door")]
 position = Vector2(3100, 230)
@@ -238,11 +239,11 @@ target_scene = ""
 prompt_text = "[E] Lanjut"
 
 [node name="Player" parent="." unique_id=1029444179 instance=ExtResource("6_ply")]
-position = Vector2(160, 770)
+position = Vector2(38, 832)
 jump_velocity = -560.0
 
 [node name="BookKeeper" parent="." unique_id=81513943 node_paths=PackedStringArray("player") instance=ExtResource("7_bk")]
-position = Vector2(500, 780)
+position = Vector2(888, 807)
 speed = 70.0
 chase_speed = 200.0
 patrol_distance = 260.0

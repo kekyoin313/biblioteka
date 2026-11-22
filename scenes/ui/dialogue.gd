@@ -17,11 +17,15 @@ var type_tween: Tween
 
 func _ready() -> void:
 	# Hubungkan tombol Next ke fungsi
+	print("[DIALOG] 1. Dialog Ready, mem-pause game.")
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	next_button.pressed.connect(_on_next_button_pressed)
-	get_tree().paused = true
+	#get_tree().paused = true
 	# Sembunyikan panel di awal (opsional, tergantung pemanggilan)
 	visible = true 
-
+	
+	print("[DIALOG] 2. Selesai pause.")
+	
 # Fungsi utama untuk memanggil dialog dari Level
 # Format data: [{"name": "...", "text": "...", "bg": "res://...", "portrait": "res://...", "posisi_x": 100}]
 func mulai_dialog(data_array: Array) -> void:

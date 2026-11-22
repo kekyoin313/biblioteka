@@ -1,7 +1,5 @@
 extends Node
 
-signal hand_updated(hand: Array)
-signal energy_updated(current: int, max: int)
 signal player_hp_updated(current: int, max: int)
 signal enemy_hp_updated(current: int, max: int)
 signal shield_updated(player_block: int, enemy_block: int)
@@ -9,40 +7,31 @@ signal turn_changed(turn_owner: String)
 signal battle_finished(result: String)
 signal enemy_intent_updated(action: String, damage: int)
 signal player_evaded(success: bool)
-signal enemy_evaded(success: bool)
+signal enemy_attacked
 
-# Aksi musuh yang sedang "ditampilkan" ke pemain
-var enemy_planned_action: String = ""
-var enemy_planned_damage: int = 0
-
+const ENEMY_ATTACK_WINDUP: float = 0.35
 const RECORD_PATH := "user://battle_records.jsonl"
 const MODEL_PATH := "res://data/decision_tree_rewards.json"
 const SFX_ATTACK_MC := "res://assets/audio/sfx/attack_mc_1.mp3"
 const SFX_ATTACK_ENEMY := "res://assets/audio/sfx/attack_enemy.mp3"
 const SFX_DEFENSE_MC := "res://assets/audio/sfx/defence_up_mc.mp3"
-const SFX_ATTACK_CARD := "res://assets/audio/sfx/attack_mc_2.mp3"
 
-const FEATURES: Array[String] = [
-	"enemy_hp_ratio",
-	"player_hp_ratio",
-	"enemy_damage",
-	"player_expected_damage",
-	"enhance_ready",
-	"player_damage_to_enemy_ratio",
-	"enemy_damage_to_player_ratio",
-	"last_action_defense"
-]
-const ACTIONS: Array[String] = ["ATTACK", "DEFENSE", "ENHANCE"]
-const EXPLORATION_RATE: float = 0.20
-const DEFENSE_BLOCK: int = 8
-const ENHANCE_BONUS: int = 3
 const TERMINAL_REWARD: float = 100.0
+const PLAYER_ACTION_DELAY: float = 1.0
+const ENEMY_WINDUP_DELAY: float = 0.8
+const ENEMY_ACTION_DELAY: float = 1.0
+
+# Nilai di bawah ini disetel per musuh lewat EnemyData saat setup_battle.
+var defense_block: int = 8
+var enhance_bonus: int = 3
+var exploration_rate: float = 0.20
+var player_damage_multiplier: float = 1.0
+var is_boss_fight: bool = false
 
 var player_hp: int = 100
 var player_max_hp: int = 100
 var player_block: int = 0
-var player_energy: int = 3
-var player_max_energy: int = 3
+var player_evade_active: bool = false
 
 var enemy_hp: int = 60
 var enemy_max_hp: int = 60
@@ -52,13 +41,11 @@ var enemy_turn_index: int = 0
 var enemy_damage_bonus: int = 0
 var enemy_enhance_ready: bool = true
 var last_enemy_action: String = ""
+var enemy_planned_action: String = ""
+var enemy_planned_damage: int = 0
 
 var turn: String = "player"
 var is_battle_over: bool = false
-
-var draw_pile: Array = []
-var hand: Array = []
-var discard_pile: Array = []
 
 var learned_model: Dictionary = {}
 var episode_id: String = ""
@@ -70,12 +57,26 @@ func setup_battle(enemy_data: Resource) -> void:
 	player_hp = GameManager.player_hp
 	player_max_hp = GameManager.player_max_hp
 	player_block = 0
-	player_energy = player_max_energy
+	player_evade_active = false
+
+	defense_block = 8
+	enhance_bonus = 3
+	exploration_rate = 0.20
+	player_damage_multiplier = 1.0
+	is_boss_fight = false
 
 	if enemy_data != null:
 		enemy_hp = int(enemy_data.get("max_hp"))
 		enemy_max_hp = enemy_hp
 		enemy_pattern = enemy_data.get("attack_pattern")
+
+		var tuning: EnemyData = enemy_data as EnemyData
+		if tuning != null:
+			defense_block = tuning.defense_block
+			enhance_bonus = tuning.enhance_bonus
+			exploration_rate = tuning.exploration_rate
+			player_damage_multiplier = tuning.player_damage_multiplier
+			is_boss_fight = tuning.is_boss
 	else:
 		enemy_hp = 60
 		enemy_max_hp = 60
@@ -93,9 +94,6 @@ func setup_battle(enemy_data: Resource) -> void:
 	turn = "player"
 	is_battle_over = false
 
-	draw_pile = DeckManager.get_shuffled_deck()
-	hand.clear()
-	discard_pile.clear()
 	current_decision.clear()
 	decision_step = 0
 	episode_id = str(Time.get_unix_time_from_system()) + "_" + str(Time.get_ticks_usec())
@@ -104,21 +102,19 @@ func setup_battle(enemy_data: Resource) -> void:
 
 	plan_enemy_turn()
 
-var player_evade_active: bool = false
 
 func plan_enemy_turn() -> void:
-	if is_battle_over: return
-	
-	# Musuh memilih aksi menggunakan AI (fungsi yang sudah ada)
-	var base_damage: int = enemy_pattern[enemy_turn_index % enemy_pattern.size()]
+	if is_battle_over:
+		return
+
+	var pattern_damage: int = enemy_pattern[enemy_turn_index % enemy_pattern.size()]
+	var base_damage: int = int(round(float(pattern_damage) * _phase_damage_multiplier()))
 	var features: Dictionary = _build_state_features(base_damage + enemy_damage_bonus)
 	var action: String = _choose_enemy_action(features)
-	
-	# Simpan rencana musuh
+
 	enemy_planned_action = action
 	enemy_planned_damage = base_damage + enemy_damage_bonus
-	
-	# Catat untuk training AI
+
 	current_decision = {
 		"episode_id": episode_id,
 		"step": decision_step,
@@ -128,20 +124,19 @@ func plan_enemy_turn() -> void:
 		"enemy_hp_start": enemy_hp
 	}
 	decision_step += 1
-	
+
 	print("[Enemy AI] Merencanakan: ", action, " | damage: ", enemy_planned_damage)
-	
-	# Pindah giliran ke player
+
 	turn = "player"
 	turn_changed.emit("player")
-	
-	# Tampilkan informasi ke UI (akan kita tangkap di battle.gd)
 	enemy_intent_updated.emit(action, enemy_planned_damage)
+
 
 func choose_player_action(action: String) -> void:
 	if is_battle_over or turn != "player":
 		return
 
+	turn = "busy"
 	player_evade_active = false
 
 	match action:
@@ -149,8 +144,8 @@ func choose_player_action(action: String) -> void:
 			var is_critical: bool = randf() < 0.20
 			var base_damage: int = GameManager.player_base_damage
 			var damage: int = base_damage * 2 if is_critical else base_damage
+			damage = int(round(float(damage) * player_damage_multiplier))
 			AudioManager.play_sfx(SFX_ATTACK_MC)
-
 
 			if is_critical:
 				print("[Battle] CRITICAL HIT! Damage: ", damage)
@@ -160,73 +155,50 @@ func choose_player_action(action: String) -> void:
 			deal_damage_to_enemy(damage)
 
 		"DEFENSE":
-			# Shield sebesar 20% HP maksimal pemain.
 			player_block = int(round(player_max_hp * 0.20))
 			shield_updated.emit(player_block, enemy_block)
 			AudioManager.play_sfx(SFX_DEFENSE_MC)
 			print("[Battle] Defense! Shield: ", player_block)
 
 		"EVADE":
-			# Peluang menghindar diperiksa saat musuh menyerang.
 			player_evade_active = true
 			print("[Battle] Bersiap menghindar!")
-			
-	if is_battle_over: return
-	
+
+	if is_battle_over:
+		return
+
+	await get_tree().create_timer(PLAYER_ACTION_DELAY).timeout
+	if is_battle_over:
+		return
+
 	turn = "enemy"
 	turn_changed.emit("enemy")
-	_execute_enemy_planned_action()
-
-	# Setiap aksi pemain langsung mengakhiri gilirannya.
-	if not is_battle_over:
-		await get_tree().create_timer(1.0).timeout
-		if not is_battle_over:
-			plan_enemy_turn()
-
-
-func draw_cards(amount: int) -> void:
-	for _i in range(amount):
-		if draw_pile.is_empty():
-			draw_pile = discard_pile.duplicate()
-			discard_pile.clear()
-			draw_pile.shuffle()
-		if draw_pile.is_empty():
-			break
-		hand.append(draw_pile.pop_back())
-	hand_updated.emit(hand)
-
-
-func play_card(card: Resource) -> void:
-	if is_battle_over or turn != "player" or card == null:
+	await get_tree().create_timer(ENEMY_WINDUP_DELAY).timeout
+	if is_battle_over:
 		return
 
-	var cost: int = int(card.get_meta("cost", 0))
-	var damage: int = int(card.get_meta("damage", 0))
-	var block: int = int(card.get_meta("block", 0))
-	var heal: int = int(card.get_meta("heal", 0))
-	var card_name: String = str(card.get_meta("card_name", "Unknown"))
-
-	if player_energy < cost:
-		print("[Battle] Energy tidak cukup!")
+	await _execute_enemy_planned_action()
+	if is_battle_over:
 		return
 
-	player_energy -= cost
-	energy_updated.emit(player_energy, player_max_energy)
+	await get_tree().create_timer(ENEMY_ACTION_DELAY).timeout
+	if is_battle_over:
+		return
 
-	if damage > 0:
-		AudioManager.play_sfx(SFX_ATTACK_CARD)
-		deal_damage_to_enemy(damage)
-	if block > 0 and not is_battle_over:
-		player_block += block
-		shield_updated.emit(player_block, enemy_block)
-		print("[Battle] Player mendapat ", block, " Block. Total: ", player_block)
-	if heal > 0 and not is_battle_over:
-		heal_player(heal)
+	plan_enemy_turn()
 
-	hand.erase(card)
-	discard_pile.append(card)
-	hand_updated.emit(hand)
-	print("[Battle] Main kartu: ", card_name)
+
+# Boss makin berbahaya saat HP-nya turun: fase 2 (<=60%) x1.25, fase 3 (<=30%) x1.5.
+func _phase_damage_multiplier() -> float:
+	if not is_boss_fight:
+		return 1.0
+	var ratio: float = float(enemy_hp) / float(maxi(enemy_max_hp, 1))
+	if ratio <= 0.30:
+		return 1.5
+	if ratio <= 0.60:
+		return 1.25
+	return 1.0
+
 
 func _build_state_features(current_enemy_damage: int) -> Dictionary:
 	var expected_player_damage: float = _estimate_next_player_damage()
@@ -246,38 +218,18 @@ func _build_state_features(current_enemy_damage: int) -> Dictionary:
 
 func _estimate_next_player_damage() -> float:
 	# Perkiraan damage Attack: 80% x base + 20% x 2*base = 1.2 x base
-	return float(GameManager.player_base_damage) * 1.2
-
-
-func _estimate_player_damage_this_turn() -> float:
-	# Cari total damage tertinggi yang bisa dimainkan dari tangan dengan energy saat ini.
-	return _max_damage_for_cards(hand, player_energy)
-
-
-func _max_damage_for_cards(cards: Array, available_energy: int) -> float:
-	# Tangan biasanya kecil (5 kartu), sehingga mencoba kombinasi subset cukup murah.
-	var card_count: int = cards.size()
-	var best_damage: int = 0
-	for mask in range(1 << card_count):
-		var cost_sum: int = 0
-		var damage_sum: int = 0
-		for index in range(card_count):
-			if (mask & (1 << index)) != 0:
-				var card: Resource = cards[index]
-				cost_sum += int(card.get_meta("cost", 0))
-				damage_sum += int(card.get_meta("damage", 0))
-		if cost_sum <= available_energy:
-			best_damage = maxi(best_damage, damage_sum)
-	return float(best_damage)
+	return float(GameManager.player_base_damage) * 1.2 * player_damage_multiplier
 
 
 func _choose_enemy_action(features: Dictionary) -> String:
+	if is_boss_fight:
+		return _boss_policy(features)
+
 	var legal_actions: Array[String] = ["ATTACK", "DEFENSE"]
 	if enemy_enhance_ready:
 		legal_actions.append("ENHANCE")
 
-	# Eksplorasi 20% membantu mengumpulkan hasil untuk berbagai aksi, bukan ATTACK saja.
-	if randf() < EXPLORATION_RATE:
+	if randf() < exploration_rate:
 		return legal_actions[randi_range(0, legal_actions.size() - 1)]
 
 	if not learned_model.is_empty():
@@ -293,8 +245,32 @@ func _choose_enemy_action(features: Dictionary) -> String:
 	return _starter_policy(features)
 
 
+# Kebijakan boss: tanpa aksi acak dan tanpa model. Membaca kondisi saat ini.
+# Catatan: aksi pemain di giliran ini belum diketahui, jadi boss bereaksi pada
+# keadaan (shield pemain, HP, ancaman damage), bukan menebak pilihan pemain.
+func _boss_policy(features: Dictionary) -> String:
+	var hp_ratio: float = float(features["enemy_hp_ratio"])
+	var damage: int = int(features["enemy_damage"])
+	var player_threat: float = float(features["player_damage_to_enemy_ratio"])
+
+	# 1. Bisa menghabisi pemain sekarang: selalu serang.
+	if damage >= player_hp + player_block:
+		return "ATTACK"
+
+	# 2. Serangan akan habis diserap shield pemain: jangan buang giliran, isi ENHANCE.
+	if player_block >= damage and enemy_enhance_ready:
+		return "ENHANCE"
+
+	# 3. Dalam bahaya (HP rendah atau pukulan pemain terlalu besar): bertahan,
+	#    tapi tidak dua kali berturut-turut.
+	if (hp_ratio < 0.30 or player_threat >= 0.45) and last_enemy_action != "DEFENSE":
+		return "DEFENSE"
+
+	# 4. Selebihnya menekan dengan serangan.
+	return "ATTACK"
+
+
 func _starter_policy(features: Dictionary) -> String:
-	# Fallback sebelum model hasil training tersedia.
 	var enemy_hp_ratio: float = float(features["enemy_hp_ratio"])
 	var player_hp_ratio: float = float(features["player_hp_ratio"])
 	var incoming_ratio: float = float(features["enemy_damage_to_player_ratio"])
@@ -306,8 +282,6 @@ func _starter_policy(features: Dictionary) -> String:
 		return "DEFENSE"
 	if enemy_enhance_ready and player_hp_ratio > 0.35 and incoming_ratio < 0.50 and player_threat < 0.75:
 		return "ENHANCE"
-	if last_enemy_action == "DEFENSE":
-		return "ATTACK"
 	return "ATTACK"
 
 
@@ -362,6 +336,10 @@ func _predict_action_value(features: Dictionary, action: String) -> float:
 
 
 func _finalize_current_decision(done: bool, result: String) -> void:
+	# Pertarungan boss tidak dicatat, supaya data training musuh biasa tidak tercemar.
+	if is_boss_fight:
+		current_decision.clear()
+		return
 	if current_decision.is_empty():
 		return
 
@@ -369,10 +347,8 @@ func _finalize_current_decision(done: bool, result: String) -> void:
 	var enemy_hp_start: int = int(current_decision.get("enemy_hp_start", enemy_hp))
 	var player_damage_received: int = player_hp_start - player_hp
 	var enemy_damage_received: int = enemy_hp_start - enemy_hp
-	# Reward positif menguntungkan musuh: damage ke Player dikurangi damage yang diterima musuh.
 	var reward: float = float(player_damage_received - enemy_damage_received)
 	if done:
-		# GameManager memakai "win" untuk kemenangan Player, "lose" untuk kekalahan Player.
 		reward += TERMINAL_REWARD if result == "lose" else -TERMINAL_REWARD
 
 	var record: Dictionary = {
@@ -411,13 +387,12 @@ func deal_damage_to_enemy(amount: int) -> void:
 		finish_battle("win")
 
 
-
 func deal_damage_to_player(amount: int) -> void:
 	if player_evade_active:
 		player_evade_active = false
-		var success = randf() < 0.50
-		player_evaded.emit(success) # <--- Tambahkan ini
-		
+		var success: bool = randf() < 0.50
+		player_evaded.emit(success)
+
 		if success:
 			print("[Battle] Evade berhasil!")
 			return
@@ -436,11 +411,6 @@ func deal_damage_to_player(amount: int) -> void:
 	if player_hp <= 0:
 		finish_battle("lose")
 
-func heal_player(amount: int) -> void:
-	player_hp = mini(player_max_hp, player_hp + amount)
-	GameManager.player_hp = player_hp
-	player_hp_updated.emit(player_hp, player_max_hp)
-
 
 func finish_battle(result: String) -> void:
 	if is_battle_over:
@@ -450,28 +420,31 @@ func finish_battle(result: String) -> void:
 	battle_finished.emit(result)
 	print("[Battle] Selesai: ", result)
 
+
 func _execute_enemy_planned_action() -> void:
 	_finalize_current_decision(false, "")
 	enemy_block = 0
 	shield_updated.emit(player_block, enemy_block)
-	
+
 	last_enemy_action = enemy_planned_action
 	print("[Battle] Musuh eksekusi: ", enemy_planned_action)
 
-	
 	match enemy_planned_action:
 		"ATTACK":
+			enemy_attacked.emit()
+			await get_tree().create_timer(ENEMY_ATTACK_WINDUP).timeout
+			if is_battle_over:
+				return
 			AudioManager.play_sfx(SFX_ATTACK_ENEMY)
 			enemy_turn_index += 1
 			enemy_damage_bonus = 0
 			enemy_enhance_ready = true
 			deal_damage_to_player(enemy_planned_damage)
 		"DEFENSE":
-			enemy_block += DEFENSE_BLOCK
+			enemy_block += defense_block
 			shield_updated.emit(player_block, enemy_block)
 			print("[Battle] Musuh bertahan.")
 		"ENHANCE":
-			enemy_damage_bonus += ENHANCE_BONUS
+			enemy_damage_bonus += enhance_bonus
 			enemy_enhance_ready = false
-			print("[Battle] Musuh enhance +", ENHANCE_BONUS)
-			
+			print("[Battle] Musuh enhance +", enhance_bonus)

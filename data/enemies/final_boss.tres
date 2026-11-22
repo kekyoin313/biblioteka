@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://1yrp03sd78y"]
+
+[ext_resource type="Script" uid="uid://bnoyo1k3lsvd2" path="res://data/enemies/enemy_data.gd" id="1_6t7m5"]
+[ext_resource type="Texture2D" uid="uid://d3sjqet1y0f6x" path="res://assets/sprites/Enemy/buku boss_attack.png" id="1_a1m5c"]
+[ext_resource type="Texture2D" uid="uid://dc6005ck1a60a" path="res://assets/sprites/Enemy/buku boss_hit.png" id="2_wgodu"]
+[ext_resource type="Texture2D" uid="uid://cg1wf58byrpow" path="res://assets/sprites/Enemy/buku boss.png" id="3_cm3ge"]
+
+[resource]
+script = ExtResource("1_6t7m5")
+enemy_name = "Boss Pengetahuan"
+max_hp = 1500
+attack_pattern = Array[int]([8, 8, 12, 16])
+level = 10
+battle_idle_sprite = ExtResource("3_cm3ge")
+battle_hurt_sprite = ExtResource("2_wgodu")
+battle_attack_sprite = ExtResource("1_a1m5c")
+defense_block = 100
+enhance_bonus = 5
+exploration_rate = 0.0
+is_boss = true
+metadata/_custom_type_script = "uid://bnoyo1k3lsvd2"

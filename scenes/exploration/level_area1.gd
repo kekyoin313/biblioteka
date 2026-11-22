@@ -8,6 +8,8 @@ const DIALOG_SCENE = preload("res://scenes/ui/dialogue.tscn") # Sesuaikan path-n
 
 func _ready() -> void:
 	# Keep the camera inside Stage 1 so empty space beyond the level edges is not visible.
+	AudioManager.play_bgm("res://assets/audio/bgm/bgm_battle.mp3")
+	
 	var camera := get_node_or_null("Player/Camera2D") as Camera2D
 	if camera != null:
 		camera.limit_left = STAGE_LEFT
@@ -28,9 +30,10 @@ func _ready() -> void:
 				GameManager.saved_player_position = Vector2.ZERO
 
 func _munculkan_dialog_intro() -> void:
+	print("[LEVEL] Mencoba memunculkan dialog...")
 	var dialog = DIALOG_SCENE.instantiate()
 	add_child(dialog) # Tambahkan dialog ke level
-	
+	print("[LEVEL] Dialog ditambahkan.")
 	# Data Dialog: Sesuaikan nama file gambarnya dengan asetmu
 	var intro_data = [
 		{
@@ -41,13 +44,25 @@ func _munculkan_dialog_intro() -> void:
 		},
 		{
 			"name": "Budi Pekerti",
-			"text": "Tempat ini... kenapa rasanya aku pernah melihatnya?",
+			"text": "Nenek bilang, perpustakaan itu hanya terlihat oleh orang yang benar-benar mencari",
 			"portrait": "res://assets/sprites/Player/Player_mata terbuka.png",
 			"posisi_x": 300
 		},
 		{
 			"name": "Budi Pekerti",
-			"text": "Buku-buku ini... mereka sepertinya hidup. Aku harus mencari tahu apa yang terjadi di sini.",
+			"text": "Sunyi sekali... seperti semua buku di sini sedang menahan napas",
+		},
+		{
+			"name": "Narator",
+			"text": "Sesosok misterius mendekati Budi, sosok itu adalah sebuah buku yang hidup",
+			"portrait": "res://assets/sprites/Enemy/g_book.png",
+			"posisi_x": 800
+		},
+		{
+			"name": "Budi Pekerti",
+			"text": "Aku tidak mau melukaimu... tapi kau tidak memberiku pilihan",
+			"portrait": "res://assets/sprites/Enemy/Attack.png",
+			"posisi_x": 300
 		}
 	]
 	
